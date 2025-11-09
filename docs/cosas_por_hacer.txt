@@ -15,8 +15,6 @@ Cosas por preguntar:
 -> Preguntar sobre la plantilla de overleaf (por si vamos a usar esa)
 -> Preguntar como debemos de escribir en dicha plantilla
 
-
-
 Enlaces:
 
 github de preparacion del modelo:
