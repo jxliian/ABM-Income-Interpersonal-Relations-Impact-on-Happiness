@@ -1,0 +1,15 @@
+COSAS POR HACER / COSAS POR PREGUNTAR
+
+
+Cosas por hacer:
+
+-> Hacer el modelo de Python
+-> Hacer el calibrado de datos con el enlace de github
+
+-> Redactar todo el overleaf y hacer el documento explicando el modelo etc
+
+Cosas por preguntar:
+
+-> Descargar los datos en crudo de la BBDD (Preguntar al profesor)
+-> Preguntar sobre la plantilla de overleaf (por si vamos a usar esa)
+-> Preguntar como debemos de escribir en dicha plantilla
