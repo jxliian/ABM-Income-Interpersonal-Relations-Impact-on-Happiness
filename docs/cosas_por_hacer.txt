@@ -11,5 +11,18 @@ Cosas por hacer:
 Cosas por preguntar:
 
 -> Descargar los datos en crudo de la BBDD (Preguntar al profesor)
+			-> SI nos metemos en el CIS, da la opcion de solicitar paquetes de datos pero ninguno para adecuarse a lo que nosotros necesitamos.
 -> Preguntar sobre la plantilla de overleaf (por si vamos a usar esa)
 -> Preguntar como debemos de escribir en dicha plantilla
+
+
+
+Enlaces:
+
+github de preparacion del modelo:
+https://github.com/nachomsenias/abmcalibration
+
+https://bitbucket.org/imoya/mo-calibration/src/master
+
+cis:
+https://www.cis.es/es/catalogo-estudios/fid/acceso-a-datos/instrucciones
