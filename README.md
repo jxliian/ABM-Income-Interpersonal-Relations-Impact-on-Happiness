@@ -1,8 +1,6 @@
 # ABM-Income-Interpersonal-Relations-Impact-on-Happiness
-ABM: Income &amp; Interpersonal Relations Impact on Happiness
-📈 ABM: Income & Interpersonal Relations Impact on Happiness 📝
+ABM: Income & Interpersonal Relations Impact on Happiness
 
-Project description
 This repository implements an Agent-Based Model (ABM) in Python to simulate happiness dynamics. The central goal is to model how rational agents allocate their limited time (T) between two main activities to maximize well‑being:
 
 - Economic Goods (E): time spent generating income (T_E)
