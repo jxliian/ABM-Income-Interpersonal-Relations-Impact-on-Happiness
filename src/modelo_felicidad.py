@@ -2,18 +2,19 @@ import pandas as pd
 import numpy as np
 import os
 
-def calculate_happiness(alpha, factores, decimales=0):
+def calculate_happiness(alpha, factores, horas=8, decimales=0):
     """
     Calcula el nivel de felicidad para cada factor y lo redondea
     al número de decimales especificado.
+    'horas' tiene por defecto el valor 8.
     """
     current_happiness = [
-        round(((factor ** alpha * 8 ** (1 - alpha)) * 5) / 11, decimales)
+        round(((factor ** alpha * horas ** (1 - alpha)) * 5) / 11, decimales)
         for factor in factores
     ]
     return current_happiness
 
-def simulated_happiness(alpha, archivo_excel_data, archivo_excel_results):
+def simulated_happiness(alpha, horas, archivo_excel_data, archivo_excel_results):
     """
     Lee los datos de 'archivo_excel_data', calcula la felicidad y
     guarda el resultado en 'archivo_excel_results'.
@@ -22,7 +23,7 @@ def simulated_happiness(alpha, archivo_excel_data, archivo_excel_results):
     # tercera columna (como en tus scripts originales)
     primer_factores = df.iloc[:, 2].tolist()
 
-    happiness_score = calculate_happiness(alpha, primer_factores)
+    happiness_score = calculate_happiness(alpha, primer_factores, horas=horas)
 
     df_resultado = pd.DataFrame({"Nivel_Felicidad": happiness_score})
     df_resultado.to_excel(archivo_excel_results, index=False)
@@ -44,6 +45,31 @@ def pedir_alpha():
             return alpha
         else:
             print("El valor alpha debe estar entre 0 y 1.")
+
+def pedir_horas(horas_actual):
+    """
+    Pide un nuevo valor para 'horas'.
+    Por defecto es 8, pero puedes cambiarlo.
+    """
+    while True:
+        try:
+            entrada = input(
+                f"Valor actual de horas = {horas_actual} (por defecto es 8). "
+                "Introduce un nuevo valor o pulsa Enter para mantener: "
+            ).strip()
+
+            if entrada == "":
+                return horas_actual
+
+            horas_nueva = float(entrada)
+
+            if horas_nueva <= 0:
+                print("Las horas deben ser un número positivo.")
+                continue
+
+            return horas_nueva
+        except ValueError:
+            print("Debe ser un número (usa punto para decimales).")
 
 def elegir_redes(redes):
     """
@@ -109,21 +135,44 @@ if __name__ == "__main__":
         },
     ]
 
-    # 1) Pedimos alpha una única vez
-    alpha = pedir_alpha()
+    # Variable horas (por defecto 8)
+    horas = 8.0
 
-    # 2) Preguntamos qué redes procesar
-    redes_a_procesar = elegir_redes(redes)
+    while True:
+        print("\n=== MENÚ PRINCIPAL ===")
+        print(f"Horas actuales = {horas} (por defecto es 8)")
+        print("  1) Ejecutar modelo de felicidad")
+        print("  2) Cambiar valor de horas")
+        print("  3) Salir sin hacer nada")
 
-    # 3) Ejecutamos el cálculo sólo para las redes seleccionadas
-    for red in redes_a_procesar:
-        ruta_input = os.path.join(CLEAN_DATA_DIR, red["input"])
-        ruta_output = os.path.join(CLEAN_DATA_DIR, red["output"])
+        opcion_menu = input("Elige una opción: ").strip()
 
-        print(f"\nProcesando {red['nombre']}...")
-        print(f"  Leyendo de : {ruta_input}")
-        print(f"  Guardando en: {ruta_output}")
+        if opcion_menu == "1":
+            # Ejecutar modelo
+            alpha = pedir_alpha()
+            redes_a_procesar = elegir_redes(redes)
 
-        simulated_happiness(alpha, ruta_input, ruta_output)
+            for red in redes_a_procesar:
+                ruta_input = os.path.join(CLEAN_DATA_DIR, red["input"])
+                ruta_output = os.path.join(CLEAN_DATA_DIR, red["output"])
 
-    print("\nProceso completado.")
+                print(f"\nProcesando {red['nombre']}...")
+                print(f"  Leyendo de : {ruta_input}")
+                print(f"  Guardando en: {ruta_output}")
+
+                simulated_happiness(alpha, horas, ruta_input, ruta_output)
+
+            print("\nProceso completado.")
+            break
+
+        elif opcion_menu == "2":
+            # Cambiar horas
+            horas = pedir_horas(horas)
+
+        elif opcion_menu == "3":
+            print("Saliendo del programa sin ejecutar el modelo.")
+            break
+
+        else:
+            print("Opción no válida. Elige 1, 2 o 3.")
+
