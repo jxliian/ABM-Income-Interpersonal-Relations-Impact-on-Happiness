@@ -3,17 +3,16 @@ COSAS POR HACER / COSAS POR PREGUNTAR
 
 Cosas por hacer:
 
--> Hacer el modelo de Python
--> Hacer el calibrado de datos con el enlace de github
+-> Aunar los 12 scripts en 4, y despues hacer uno que los ejecute y puedas seleccionar que modelo segun red social.
 
--> Redactar todo el overleaf y hacer el documento explicando el modelo etc
+-> Arreglar rutas relativas, y poner que las variables se puedan cambiar sin meterse en el codigo.
 
-Cosas por preguntar:
+-> Hacerlo con un menu bonito.
 
--> Descargar los datos en crudo de la BBDD (Preguntar al profesor)
-			-> SI nos metemos en el CIS, da la opcion de solicitar paquetes de datos pero ninguno para adecuarse a lo que nosotros necesitamos.
--> Preguntar sobre la plantilla de overleaf (por si vamos a usar esa)
--> Preguntar como debemos de escribir en dicha plantilla
+-> Y mirar si podemos añadir mas variables al modelo.
+
+ -> Overleaf es lo ultimo, una vez hagamos todo.
+
 
 Enlaces:
 
