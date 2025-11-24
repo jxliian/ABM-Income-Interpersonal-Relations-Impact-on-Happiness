@@ -9,7 +9,7 @@ Cosas por hacer:
 
 -> Hacerlo con un menu bonito.
 
--> Y mirar si podemos añadir mas variables al modelo.
+-> Y mirar si podemos añadir mas variables al modelo. + Mirar lo de los datos que nos dio la del CIS
 
  -> Overleaf es lo ultimo, una vez hagamos todo.
 
