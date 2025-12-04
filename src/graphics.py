@@ -114,7 +114,7 @@ def lanzar_servidor(nombre_red, n_agentes, nombre_archivo, puerto=8521):
     ruta_archivo = obtener_ruta_datos(nombre_archivo)
     
     if not os.path.exists(ruta_archivo):
-        print(f"\n❌ ERROR: El archivo '{nombre_archivo}' no existe en la carpeta clean_data.")
+        print(f"\n ERROR: El archivo '{nombre_archivo}' no existe en la carpeta clean_data.")
         input("Presiona ENTER para volver al menú...")
         return
 
@@ -153,10 +153,11 @@ def menu():
         print("\n========================================")
         print("   VISUALIZADOR DE AGENTES (MESA)       ")
         print("========================================")
+        print("Si quieres ejecutar uno diferente, sal (Ctrl+C) , y vuelve a ejecutar.")
         print("1. Visualizar Instagram (N=267)")
         print("2. Visualizar Twitter/X (N=371)")
         print("3. Visualizar Facebook  (N=1063)")
-        print("4. Ejecutar Secuencia (Una tras otra)")
+        print("4. Ejecutar Secuencia (Una tras otra. Modo Experimental. En trabajo)")
         print("5. Salir")
         
         opcion = input("\nSeleccione una opción (1-5): ")
