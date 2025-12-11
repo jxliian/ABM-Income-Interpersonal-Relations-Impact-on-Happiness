@@ -6,88 +6,145 @@ from mesa.datacollection import DataCollector
 from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
 import pandas as pd
+import numpy as np
 import os
 import sys
 
-# --- 1. GESTIÓN DE RUTAS RELATIVAS ---
+# --- 1. GESTIÓN DE RUTAS ---
 def obtener_ruta_datos(nombre_archivo):
-    """
-    Busca el archivo en la carpeta hermana 'clean_data' 
-    sin importar en qué PC estemos.
-    """
     try:
-        # Ubicación de este script (dentro de src)
         dir_script = os.path.dirname(os.path.abspath(__file__))
-        # Subir un nivel a la raíz
         dir_raiz = os.path.dirname(dir_script)
-        # Bajar a clean_data
         ruta = os.path.join(dir_raiz, 'clean_data', nombre_archivo)
         return ruta
     except Exception as e:
-        print(f"Error construyendo la ruta: {e}")
+        print(f"Error construyendo ruta: {e}")
         return nombre_archivo
 
-# --- 2. DEFINICIÓN DEL AGENTE (Común para las 3 redes) ---
-class MyAgent(Agent):
-    def __init__(self, unique_id, model, happiness, color):
+# --- 2. AGENTE CON INTELIGENCIA SOCIAL ---
+class SocialAgent(Agent):
+    def __init__(self, unique_id, model, happiness, sociability):
         super().__init__(unique_id, model)
-        self.happiness = happiness
-        self.color = color
+        self.happiness = float(happiness)
+        self.sociability = float(sociability)
+        
+        # Definimos un umbral: ¿Qué consideramos "sociable"?
+        # Si la sociabilidad es alta (> 5 por ejemplo, depende de tu alpha), busca gente.
+        # Ajusta este valor según tus datos reales.
+        self.social_threshold = 2.0 
 
-    def move(self):
+    def update_color(self):
+        """Actualiza el color basado en la felicidad actual redondeada."""
+        val = int(round(max(0, min(5, self.happiness))))
+        color_mapping = {
+            0: "Red", 1: "Orange", 2: "Yellow", 
+            3: "Green", 4: "LightBlue", 5: "DarkBlue"
+        }
+        return color_mapping.get(val, "Grey")
+
+    def move_smart(self):
+        """
+        Movimiento basado en Sociabilidad:
+        - Si soy sociable: Prefiero celdas con vecinos.
+        - Si soy antisocial: Prefiero celdas vacías.
+        """
         possible_steps = self.model.grid.get_neighborhood(
-            self.pos,
-            moore=True,
-            include_center=False
+            self.pos, moore=True, include_center=False
         )
-        new_position = self.random.choice(possible_steps)
+        
+        # Clasificamos las celdas posibles
+        candidates = []
+        for step in possible_steps:
+            # Contamos agentes en esa celda candidata (usamos get_cell_list_contents)
+            occupants = self.model.grid.get_cell_list_contents([step])
+            count = len(occupants)
+            candidates.append((step, count))
+        
+        if not candidates:
+            return
+
+        # Lógica de decisión
+        if self.sociability > self.social_threshold:
+            # --- COMPORTAMIENTO GREGARIO (Busca multitud) ---
+            # Ordenamos descendente por cantidad de ocupantes
+            candidates.sort(key=lambda x: x[1], reverse=True)
+            # Intentamos ir a donde haya más gente, pero con un poco de aleatoriedad
+            # para no quedar estancados
+            best_steps = [c[0] for c in candidates if c[1] >= candidates[0][1]]
+        else:
+            # --- COMPORTAMIENTO ERMITAÑO (Busca soledad) ---
+            # Ordenamos ascendente (preferimos 0 ocupantes)
+            candidates.sort(key=lambda x: x[1], reverse=False)
+            best_steps = [c[0] for c in candidates if c[1] <= candidates[0][1]]
+            
+        new_position = self.random.choice(best_steps)
         self.model.grid.move_agent(self, new_position)
 
-    def step(self):
-        self.move()
+    def interact_and_influence(self):
+        """
+        Calcula la media de felicidad de los vecinos y ajusta la propia.
+        La intensidad del cambio depende de la sociabilidad.
+        """
+        neighbors = self.model.grid.get_neighbors(self.pos, moore=True, include_center=False)
+        
+        if len(neighbors) > 0:
+            avg_happiness = np.mean([a.happiness for a in neighbors])
+            
+            # Factor de permeabilidad: Cuanto más sociable, más te afecta el entorno.
+            # Normalizamos un poco para que el cambio no sea drástico instantáneamente.
+            # Supongamos que sociabilidad va de 0 a 10 aprox.
+            permeability = min(0.3, self.sociability * 0.05) 
+            
+            # Fórmula de difusión: Nueva = Vieja + Tasa * (Objetivo - Vieja)
+            delta = (avg_happiness - self.happiness) * permeability
+            
+            self.happiness += delta
+            
+            # Mantenemos la felicidad en rangos lógicos (0 a 5)
+            self.happiness = max(0, min(5, self.happiness))
 
-# --- 3. DEFINICIÓN DEL MODELO (Común para las 3 redes) ---
-class MyModel(Model):
+    def step(self):
+        self.move_smart()
+        self.interact_and_influence()
+
+# --- 3. MODELO ---
+class SocialModel(Model):
     def __init__(self, N, width, height, excel_file_path):
         self.num_agents = N
         self.grid = MultiGrid(width, height, True)
         self.schedule = RandomActivation(self)
-        self.running = True # Necesario para que el botón Start funcione correctamente en nuevas versiones
+        self.running = True 
 
-        print(f"Cargando datos desde: {excel_file_path}")
+        print(f"Cargando datos extendidos desde: {excel_file_path}")
         
         try:
-            # Leer excel (header=None según tu código original)
-            df = pd.read_excel(excel_file_path, header=None)
-            happiness_values = df.iloc[:, 0].tolist()
-        except FileNotFoundError:
-            print(f"ERROR CRÍTICO: No se encontró el archivo: {excel_file_path}")
-            # Generar datos dummy para que no crashee el servidor si falta el archivo
-            happiness_values = [0] * N 
+            # Asumimos que la fila 1 son headers. 
+            # Col 0 = Felicidad, Col 1 = Sociabilidad
+            df = pd.read_excel(excel_file_path) # Detecta headers automáticamente
+            
+            # Si el excel no tiene headers y empieza directo con números, usa: header=None
+            # Ajuste de seguridad:
+            if isinstance(df.iloc[0,0], str): 
+                # Parece que leyó headers como datos, recargamos
+                pass 
+            
+            # Extraemos columnas. Ajusta nombres si tus columnas tienen nombres específicos
+            # O usamos iloc para ir a lo seguro (columna 0 y columna 1)
+            happiness_vals = df.iloc[:, 0].tolist()
+            sociability_vals = df.iloc[:, 1].tolist()
+            
         except Exception as e:
-            print(f"Error leyendo el Excel: {e}")
-            happiness_values = [0] * N
-
-        # Mapeo de valores a colores
-        color_mapping = {
-            0: "Red",
-            1: "Orange",
-            2: "Yellow",
-            3: "Green",
-            4: "LightBlue",
-            5: "DarkBlue"
-        }
+            print(f"Error leyendo Excel ({e}). Usando datos aleatorios.")
+            happiness_vals = np.random.uniform(0, 5, N).tolist()
+            sociability_vals = np.random.uniform(0, 5, N).tolist()
 
         for i in range(self.num_agents):
-            # Ciclo por los valores si hay menos datos que agentes
-            if len(happiness_values) > 0:
-                happiness = happiness_values[i % len(happiness_values)]
-            else:
-                happiness = 0
+            # Obtener datos cíclicos si hay menos filas que agentes
+            h_val = happiness_vals[i % len(happiness_vals)]
+            s_val = sociability_vals[i % len(sociability_vals)]
             
-            color = color_mapping.get(happiness, "Grey")
-            
-            a = MyAgent(i, self, happiness, color)
+            # Crear agente
+            a = SocialAgent(i, self, h_val, s_val)
             self.schedule.add(a)
             
             # Ubicación aleatoria
@@ -96,7 +153,7 @@ class MyModel(Model):
             self.grid.place_agent(a, (x, y))
 
         self.datacollector = DataCollector(
-            agent_reporters={"Pos": "pos"}
+            agent_reporters={"Felicidad": "happiness", "Sociabilidad": "sociability"}
         )
 
     def step(self):
@@ -105,91 +162,60 @@ class MyModel(Model):
 
 # --- 4. VISUALIZACIÓN ---
 def agent_portrayal(agent):
-    if agent is None:
-        return
-    portrayal = {"Shape": "circle", "r": 0.7, "Filled": "true", "Layer": 0, "Color": agent.color}
-    return portrayal
+    if agent is None: return
+    
+    # El color cambia dinámicamente en cada paso
+    color = agent.update_color()
+    
+    # El tamaño podría representar la sociabilidad (opcional)
+    # radio = 0.5 + (agent.sociability / 10.0) 
+    
+    return {
+        "Shape": "circle", 
+        "r": 0.8, 
+        "Filled": "true", 
+        "Layer": 0, 
+        "Color": color,
+        # Mostramos info al pasar el mouse
+        "text": f"H:{agent.happiness:.1f} S:{agent.sociability:.1f}", 
+        "text_color": "black"
+    }
 
-def lanzar_servidor(nombre_red, n_agentes, nombre_archivo, puerto=8521):
+def lanzar_servidor(nombre_red, n_agentes, nombre_archivo):
     ruta_archivo = obtener_ruta_datos(nombre_archivo)
     
-    if not os.path.exists(ruta_archivo):
-        print(f"\n ERROR: El archivo '{nombre_archivo}' no existe en la carpeta clean_data.")
-        input("Presiona ENTER para volver al menú...")
-        return
-
-    print(f"\n>>> Iniciando simulación para: {nombre_red}")
-    print(f">>> Agentes: {n_agentes}")
-    print(f">>> Archivo: {ruta_archivo}")
-    print(">>> Abre tu navegador en http://127.0.0.1:{}/ si no se abre automáticamente.".format(puerto))
-    print(">>> Presiona Ctrl+C en esta consola para detener el servidor y volver al menú (o salir).\n")
-
-    grid = CanvasGrid(agent_portrayal, 50, 50, 500, 500)
+    # Configuración de la rejilla
+    grid = CanvasGrid(agent_portrayal, 30, 30, 600, 600) # 30x30 es mejor para ver interacciones que 50x50
 
     try:
         server = ModularServer(
-            MyModel,
+            SocialModel,
             [grid],
-            f"Modelo Felicidad: {nombre_red}",
-            {"N": n_agentes, "width": 50, "height": 50, "excel_file_path": ruta_archivo}
+            f"Dinámica Social: {nombre_red}",
+            {"N": n_agentes, "width": 30, "height": 30, "excel_file_path": ruta_archivo}
         )
-        server.port = puerto
+        server.port = 8521
+        print(f"\nIniciando {nombre_red}...")
         server.launch()
-    except KeyboardInterrupt:
-        print("\nServidor detenido por el usuario.")
     except Exception as e:
-        print(f"Error lanzando el servidor: {e}")
+        print(f"Error: {e}")
 
-# --- 5. MENÚ PRINCIPAL ---
-def menu():
-    # Configuración de cada red según tus códigos originales
+# --- 5. MENÚ ---
+if __name__ == "__main__":
     config = {
-        'ig': {'name': 'Instagram', 'N': 267, 'file': 'model_IG.xlsx'},
-        'tw': {'name': 'Twitter (X)', 'N': 371, 'file': 'model_X.xlsx'},
-        'fb': {'name': 'Facebook', 'N': 1063, 'file': 'model_FB.xlsx'}
+        '1': {'name': 'Facebook', 'N': 400, 'file': 'model_FB.xlsx'}, # N reducido para mejor visualización
+        '2': {'name': 'Instagram', 'N': 267, 'file': 'model_IG.xlsx'},
+        '3': {'name': 'X (Twitter)', 'N': 371, 'file': 'model_X.xlsx'}
     }
 
-    while True:
-        print("\n========================================")
-        print("   VISUALIZADOR DE AGENTES (MESA)       ")
-        print("========================================")
-        print("Si quieres ejecutar uno diferente, sal (Ctrl+C) , y vuelve a ejecutar.")
-        print("1. Visualizar Instagram (N=267)")
-        print("2. Visualizar Twitter/X (N=371)")
-        print("3. Visualizar Facebook  (N=1063)")
-        print("4. Ejecutar Secuencia (Una tras otra. Modo Experimental. En trabajo)")
-        print("5. Salir")
-        
-        opcion = input("\nSeleccione una opción (1-5): ")
-
-        if opcion == '1':
-            lanzar_servidor(config['ig']['name'], config['ig']['N'], config['ig']['file'])
-        
-        elif opcion == '2':
-            lanzar_servidor(config['tw']['name'], config['tw']['N'], config['tw']['file'])
-        
-        elif opcion == '3':
-            lanzar_servidor(config['fb']['name'], config['fb']['N'], config['fb']['file'])
-        
-        elif opcion == '4':
-            print("\n!!! MODO SECUENCIA !!!")
-            print("Se lanzará Instagram. Cuando cierres el servidor (Ctrl+C), se lanzará Twitter, etc.")
-            input("Presiona ENTER para comenzar...")
-            lanzar_servidor(config['ig']['name'], config['ig']['N'], config['ig']['file'])
-            print("\n--- Siguiente: Twitter ---")
-            lanzar_servidor(config['tw']['name'], config['tw']['N'], config['tw']['file'])
-            print("\n--- Siguiente: Facebook ---")
-            lanzar_servidor(config['fb']['name'], config['fb']['N'], config['fb']['file'])
-            print("\nSecuencia terminada.")
-
-        elif opcion == '5':
-            print("Saliendo...")
-            sys.exit()
-        
-        else:
-            print("Opción no válida.")
-
-if __name__ == "__main__":
-    # Necesario para evitar problemas con asyncio en algunos entornos de windows/notebooks
-    # aunque en script puro de python suele ir bien.
-    menu()
+    print("=== SIMULACIÓN DE DINÁMICA SOCIAL ===")
+    print("Los agentes se mueven e influyen según su sociabilidad.")
+    print("1) Facebook")
+    print("2) Instagram")
+    print("3) X")
+    
+    op = input("Elige: ")
+    if op in config:
+        lanzar_servidor(config[op]['name'], config[op]['N'], config[op]['file'])
+    else:
+        print("Opción inválida")

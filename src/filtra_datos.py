@@ -65,8 +65,8 @@ def procesar_datos_social_media(social_media_key, columna_red_social):
     
     filas_con_uno.to_excel(nuevo_excel_path, index=False)
     
-    print(f"\n✅ Procesamiento completado. Filas filtradas:\n{filas_con_uno.head(5)}")
-    print(f"\n💾 Archivo guardado correctamente en: {nuevo_excel_path}")
+    print(f"\n Procesamiento completado. Filas filtradas:\n{filas_con_uno.head(5)}")
+    print(f"\n Archivo guardado correctamente en: {nuevo_excel_path}")
 
 
 # --- FUNCIÓN PRINCIPAL Y MENÚ INTERACTIVO ---
@@ -81,7 +81,7 @@ def menu_principal():
     }
     
     print("\n========================================================")
-    print("      📊 Herramienta de Filtrado de Datos ABM/Felicidad")
+    print("      Herramienta de Filtrado de Datos ABM/Felicidad")
     print("========================================================")
     print("Seleccione la red social cuyos datos desea procesar:")
     print("1. X (Anteriormente Twitter)")
