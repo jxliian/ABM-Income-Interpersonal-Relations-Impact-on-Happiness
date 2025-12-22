@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import os
+import sys
+
+# --- 1. CÁLCULOS MATEMÁTICOS ---
 
 def calculate_happiness(alpha, factores, horas=8, decimales=2):
     """
@@ -19,9 +22,7 @@ def calculate_sociability_from_happiness(happiness_scores, alpha, decimales=2):
     """
     [NUEVA LÓGICA] Teorema de la Resonancia Social Inversa.
     Calcula la Sociabilidad (S) basándose únicamente en la Felicidad (H).
-    
     Fórmula: S = H * (1 + H^alpha)
-    Esto asocia a cada nivel de felicidad una sociabilidad necesaria para mantenerla.
     """
     sociability_index = []
     
@@ -33,9 +34,12 @@ def calculate_sociability_from_happiness(happiness_scores, alpha, decimales=2):
         
     return sociability_index
 
+# --- 2. PROCESAMIENTO DE ARCHIVOS ---
+
 def simulated_happiness(alpha, horas, archivo_excel_data, archivo_excel_results):
     """
-    Lee datos, calcula Felicidad y Sociabilidad derivada, y guarda ambas columnas.
+    Lee datos, calcula Felicidad y Sociabilidad derivada, y guarda TRES columnas:
+    Felicidad, Sociabilidad e Ingresos.
     """
     if not os.path.exists(archivo_excel_data):
         print(f"Error: No se encuentra el archivo {archivo_excel_data}")
@@ -43,51 +47,54 @@ def simulated_happiness(alpha, horas, archivo_excel_data, archivo_excel_results)
 
     df = pd.read_excel(archivo_excel_data)
     
-    # --- 1. DETECCIÓN INTELIGENTE DE DATOS ---
-    # Buscamos qué dato usar como 'factor' (Likes o Longitud de texto)
-    cols_numericas = df.select_dtypes(include=[np.number]).columns.tolist()
-    cols_texto = df.select_dtypes(include=['object', 'string']).columns.tolist()
+    # --- DETECCIÓN DE DATOS (INGRESOS) ---
+    ingresos_raw = []
     
-    primer_factores = []
-    
-    if len(cols_numericas) > 0 and "id" not in cols_numericas[-1].lower():
-        # Si hay una columna numérica al final, la usamos
-        col_usada = cols_numericas[-1]
-        primer_factores = df[col_usada].tolist()
-        print(f"  -> Calculando basado en datos numéricos: '{col_usada}'")
+    # 1. Intentamos buscar la columna específica del CIS "P65"
+    if "P65" in df.columns:
+        print("  -> Columna 'P65' (Ingresos) detectada.")
+        ingresos_raw = df["P65"].tolist()
         
-    elif len(cols_texto) > 0:
-        # Si solo hay texto, contamos los caracteres de cada celda
-        col_usada = cols_texto[-1]
-        primer_factores = df[col_usada].astype(str).apply(len).tolist()
-        print(f"  -> Calculando basado en longitud de texto de: '{col_usada}'")
-        
+    # 2. Si no existe, usamos la lógica de detección automática anterior
     else:
-        # Caso de emergencia: Generar aleatorios para que no falle
-        print("  -> ¡Aviso! No hay datos útiles. Usando simulación aleatoria.")
-        np.random.seed(42)
-        primer_factores = np.random.randint(10, 500, size=len(df)).tolist()
+        cols_numericas = df.select_dtypes(include=[np.number]).columns.tolist()
+        cols_texto = df.select_dtypes(include=['object', 'string']).columns.tolist()
+        
+        if len(cols_numericas) > 0 and "id" not in cols_numericas[-1].lower():
+            col_usada = cols_numericas[-1]
+            ingresos_raw = df[col_usada].tolist()
+            print(f"  -> Usando columna numérica alternativa: '{col_usada}'")
+            
+        elif len(cols_texto) > 0:
+            col_usada = cols_texto[-1]
+            ingresos_raw = df[col_usada].astype(str).apply(len).tolist()
+            print(f"  -> Usando longitud de texto de: '{col_usada}'")
+            
+        else:
+            print("  -> ¡Aviso! No hay datos útiles. Usando simulación aleatoria.")
+            np.random.seed(42)
+            ingresos_raw = np.random.randint(1, 12, size=len(df)).tolist()
 
-    # --- 2. CÁLCULO DE FELICIDAD ---
-    happiness_score = calculate_happiness(alpha, primer_factores, horas=horas)
+    # --- CÁLCULOS ---
+    # Usamos los ingresos detectados para calcular la felicidad
+    happiness_score = calculate_happiness(alpha, ingresos_raw, horas=horas)
 
-    # --- 3. CÁLCULO DE SOCIABILIDAD (Basado en la Felicidad) ---
+    # Usamos la felicidad para calcular la sociabilidad
     sociability_score = calculate_sociability_from_happiness(happiness_score, alpha)
 
-    # --- 4. GUARDADO ---
-    # Creamos el DataFrame con las dos columnas juntas
+    # --- GUARDADO (AHORA CON 3 COLUMNAS) ---
     df_resultado = pd.DataFrame({
         "Nivel_Felicidad": happiness_score,
-        "Indice_Sociabilidad": sociability_score
+        "Indice_Sociabilidad": sociability_score,
+        "Ingresos": ingresos_raw  # <--- TERCERA COLUMNA AÑADIDA
     })
     
     df_resultado.to_excel(archivo_excel_results, index=False)
-    print(f"  Guardado correctamente en:\n  {archivo_excel_results}")
+    print(f"  Guardado correctamente (con Ingresos) en:\n  {archivo_excel_results}")
+
+# --- 3. MENÚS Y UTILIDADES ---
 
 def pedir_alpha():
-    """
-    Pide un valor alpha al usuario y comprueba que esté entre 0 y 1.
-    """
     while True:
         try:
             alpha = float(input("Introduce un valor alpha entre 0 y 1: "))
@@ -101,9 +108,6 @@ def pedir_alpha():
             print("El valor alpha debe estar entre 0 y 1.")
 
 def pedir_horas(horas_actual):
-    """
-    Pide un nuevo valor para 'horas'.
-    """
     while True:
         try:
             entrada = input(
@@ -123,9 +127,6 @@ def pedir_horas(horas_actual):
             print("Debe ser un número válido.")
 
 def elegir_redes(redes):
-    """
-    Selección de redes para procesar.
-    """
     print("\n¿Qué redes quieres procesar?")
     print("  1) Facebook")
     print("  2) Instagram")
@@ -162,12 +163,11 @@ if __name__ == "__main__":
     PROJECT_ROOT = os.path.dirname(SRC_DIR)
     CLEAN_DATA_DIR = os.path.join(PROJECT_ROOT, "clean_data")
     
-    # Crear carpeta si no existe (para evitar errores en primera ejecución)
     if not os.path.exists(CLEAN_DATA_DIR):
         try:
             os.makedirs(CLEAN_DATA_DIR)
         except:
-            pass # Si no se puede crear, probablemente ya exista o sea un tema de permisos
+            pass 
 
     redes = [
         {"nombre": "FaceBook", "input": "3145_data_clean_FB.xlsx", "output": "model_FB.xlsx"},
@@ -178,7 +178,7 @@ if __name__ == "__main__":
     horas = 8.0
 
     while True:
-        print("\n=== MENÚ PRINCIPAL (Felicidad + Sociabilidad) ===")
+        print("\n=== MENÚ PRINCIPAL (Felicidad + Sociabilidad + Ingresos) ===")
         print(f"Horas actuales = {horas}")
         print("  1) Ejecutar modelo")
         print("  2) Cambiar horas")
