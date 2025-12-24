@@ -1,3 +1,4 @@
+![Economic Segregation Sim Banner](./docs/portada_github.png)
 
 # Dinámicas de Segregación Socioeconómica y Contagio Emocional en Redes Sociales
 
