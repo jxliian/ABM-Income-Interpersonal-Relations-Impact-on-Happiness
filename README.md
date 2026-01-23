@@ -59,6 +59,16 @@ Proponemos que la sociabilidad () no es una constante, sino una propiedad emerge
 
 ---
 
+## Flujo de Funcionamiento
+
+La herramienta sigue un proceso lógico estructurado en 4 pasos (Filtrado $\to$ Modelo $\to$ Correlaciones $\to$ Visualización).
+
+*   **Pasos 1-3:** Se ejecutan automáticamente al iniciar la aplicación (procesamiento de datos y cálculos teóricos).
+*   **Paso 4 (Visualización Interactiva):** Es el entorno gráfico donde interactúas con la simulación.
+    *   ⚠️ **Importante:** Si usas el **Slider**, recuerda moverlo, pulsar **Reset** y luego **Start** para que los cambios surtan efecto.
+
+👉 **[Guía Detallada: Cómo Funciona](./github_pages/como_funciona.md)**
+
 ---
 
 ## Instalación Rápida (Windows)
