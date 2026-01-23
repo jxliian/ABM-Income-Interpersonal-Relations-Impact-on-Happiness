@@ -307,27 +307,6 @@ def agent_portrayal(agent):
         "text": txt, "text_color": "white" 
     }
 
-def launch(name, filename, with_slider=False):
-    path = get_data_path(filename)
-    layout = DashboardLayout()
-    chart = ChartModule([{"Label": "Felicidad Global", "Color": "Black"}], canvas_height=200)
-    grid = CanvasGrid(agent_portrayal, 30, 30, 600, 600)
-    stats = ComparisonStats()
-
-    model_params = {
-        "N": 300,
-        "width": 30,
-        "height": 30,
-        "excel_file_path": path,
-    }
-
-    if with_slider:
-        # Nota: El paso de 100 ayuda a ver cambios más granulares
-        model_params["min_wage"] = Slider("Salario Mínimo (SMI)", 750, 0, 7000, 100)
-    else:
-        model_params["min_wage"] = 0 
-
-
 # --- CUSTOM SERVER TO FIX TEMPLATE PATH IN FROZEN APPS ---
 class FixedModularServer(ModularServer):
     def __init__(self, model_cls, visualization_elements, name="Mesa Model", model_params=None):
@@ -359,6 +338,29 @@ class FixedModularServer(ModularServer):
                 self.settings["template_path"] = fixed_template_path
             else:
                 print(f"DEBUGGING ERROR: Template dir missing: {fixed_template_path}")
+
+
+# --- 7. LANZAMIENTO ---
+def launch(name, filename, with_slider=False):
+    path = get_data_path(filename)
+    layout = DashboardLayout()
+    chart = ChartModule([{"Label": "Felicidad Global", "Color": "Black"}], canvas_height=200)
+    grid = CanvasGrid(agent_portrayal, 30, 30, 600, 600)
+    stats = ComparisonStats()
+
+    model_params = {
+        "N": 300,
+        "width": 30,
+        "height": 30,
+        "excel_file_path": path,
+    }
+
+    if with_slider:
+        # Nota: El paso de 100 ayuda a ver cambios más granulares
+        model_params["min_wage"] = Slider("Salario Mínimo (SMI)", 750, 0, 7000, 100)
+    else:
+        model_params["min_wage"] = 0 
+
 
     server = FixedModularServer(
         SocialEvolutionModel,
