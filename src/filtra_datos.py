@@ -18,8 +18,11 @@ def procesar_datos_social_media(social_media_key, columna_red_social):
         # Si es EXE, base es donde está el ejecutable
         base_dir = os.path.dirname(sys.executable)
     else:
-        # Si es Script, asumimos ejecución desde root del proyecto
-        base_dir = os.getcwd()
+        # Si es Script, calculamos la ruta relativa al archivo para ser robustos
+        # Esto funciona tanto si ejecutas desde root como desde src/
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        # Asumimos que el script está en src/, así que subimos un nivel para el root
+        base_dir = os.path.dirname(script_dir)
 
     DATA_FOLDER = 'data'
     CLEAN_DATA_FOLDER = 'clean_data'
