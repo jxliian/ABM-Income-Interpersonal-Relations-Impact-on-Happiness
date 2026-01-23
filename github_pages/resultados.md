@@ -49,12 +49,16 @@ Configuramos una sociedad donde la felicidad depende casi exclusivamente del niv
 ### Escenario 3: Impacto de Políticas Redistributivas (SMI Variable)
 Introducimos un **Salario Mínimo Interprofesional (SMI)** dinámico.
 
-![Comparativa SMI](../assets/images/smi_medio_1.png)
-*Figura 4: Impacto de un SMI Moderado.*
+![Comparativa SMI (Anterior)](../assets/images/smi_medio.png)
+![Comparativa SMI (Actual)](../assets/images/smi_medio_1.png)
+*Figura 4: Impacto de un SMI Moderado (Comparativa Anterior vs Actual).*
 
 | SMI Bajo (750€) | SMI Alto (3000€) |
 | :---: | :---: |
-| ![SMI Bajo](../assets/images/smi_bajo_1.png) | ![SMI Alto](../assets/images/smi_alto_1.png) |
+| **Anterior** | **Anterior** |
+| ![SMI Bajo Old](../assets/images/smi_bajo.png) | ![SMI Alto Old](../assets/images/smi_alto.png) |
+| **Actual** | **Actual** |
+| ![SMI Bajo New](../assets/images/smi_bajo_1.png) | ![SMI Alto New](../assets/images/smi_alto_1.png) |
 
 *   **Resultado:** El aumento del SMI actúa como un **"ascensor emocional"**.
 *   **Interpretación:** Garantizar la suficiencia material reactiva la sociabilidad en la base de la pirámide.
