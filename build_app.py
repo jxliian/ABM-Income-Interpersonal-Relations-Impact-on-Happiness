@@ -11,10 +11,17 @@ if os.path.exists('dist'):
 # Find Mesa path to include templates
 import mesa
 mesa_path = os.path.dirname(mesa.__file__)
-# We need to include the 'visualization/templates' directory
-mesa_templates = os.path.join(mesa_path, 'visualization', 'templates')
-
 print(f"Mesa path found: {mesa_path}")
+
+# Robustly find 'templates' dir
+mesa_templates = os.path.join(mesa_path, 'visualization', 'templates')
+if not os.path.exists(mesa_templates):
+    # Fallback: search recursively
+    for root, dirs, files in os.walk(mesa_path):
+        if 'templates' in dirs:
+            mesa_templates = os.path.join(root, 'templates')
+            print(f"Found Mesa templates at: {mesa_templates}")
+            break
 
 # Defines aditional data to include
 # Format: (source_path, destination_path)
