@@ -9,6 +9,30 @@ from mesa.visualization.UserParam import Slider
 import pandas as pd
 import numpy as np
 import os
+import sys
+
+# --- PATCH FOR FROZEN MESA ---
+# This ensures that when running as a PyInstaller OneFile executable,
+# mesa_viz_tornado finds its templates in the temp directory.
+if getattr(sys, 'frozen', False):
+    import mesa_viz_tornado.ModularVisualization as MV
+    import mesa_viz_tornado
+    
+    # Path to templates inside the temporary directory
+    # collect_all puts mesa_viz_tornado/templates at root/mesa_viz_tornado/templates
+    base_dir = sys._MEIPASS
+    template_path = os.path.join(base_dir, 'mesa_viz_tornado', 'templates')
+    
+    print(f"DEBUG: Patching Mesa Template Path to: {template_path}")
+    
+    # Monkeypath the template location detection or simply override if possible
+    # Note: Tornado looks for templates relative to the handler or configured path.
+    # We might need to ensure ModularServer picks this up.
+    
+    # Check if ModularVisualization has a specific attribute for path, 
+    # otherwise we rely on the fact that we fixed the package structure.
+    # But explicitly printing it helps debugging.
+
 
 # --- 1. CONFIGURACIÓN ---
 MAPA_INGRESOS = {
@@ -303,7 +327,40 @@ def launch(name, filename, with_slider=False):
     else:
         model_params["min_wage"] = 0 
 
-    server = ModularServer(
+
+# --- CUSTOM SERVER TO FIX TEMPLATE PATH IN FROZEN APPS ---
+class FixedModularServer(ModularServer):
+    def __init__(self, model_cls, visualization_elements, name="Mesa Model", model_params=None):
+        # 1. Initialize parent normally
+        super().__init__(model_cls, visualization_elements, name, model_params)
+        
+        # 2. Force patch template_path if frozen
+        if getattr(sys, 'frozen', False):
+            base_dir = sys._MEIPASS
+            # We know exactly where collect_all put it: mesa_viz_tornado/templates
+            fixed_template_path = os.path.join(base_dir, 'mesa_viz_tornado', 'templates')
+            
+            print(f"DEBUG: Enforcing template path: {fixed_template_path}")
+            
+            if os.path.exists(fixed_template_path):
+                # Verify modular_template.html exists
+                file_check = os.path.join(fixed_template_path, 'modular_template.html')
+                if os.path.exists(file_check):
+                    print(f"DEBUG: Found modular_template.html at {file_check}")
+                else:
+                    print(f"DEBUGGING ERROR: modular_template.html MISSING in {fixed_template_path}")
+                    # List dir content for debug
+                    try:
+                        print(f"DEBUG: Dir contents: {os.listdir(fixed_template_path)}")
+                    except:
+                        pass
+                
+                # OVERRIDE SETTINGS
+                self.settings["template_path"] = fixed_template_path
+            else:
+                print(f"DEBUGGING ERROR: Template dir missing: {fixed_template_path}")
+
+    server = FixedModularServer(
         SocialEvolutionModel,
         [layout, chart, grid, stats], 
         f"Simulación: {name}",
