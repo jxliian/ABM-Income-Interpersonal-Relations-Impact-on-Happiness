@@ -11,6 +11,9 @@ nav_order: 3
 
 La simulación muestra una rápida transición de una distribución aleatoria a una estructura altamente segregada. Como se observa en el mapa de agentes final, emergen **"barrios digitales"** homogéneos económicamente.
 
+![Mapa Final de Segregación](../assets/images/captura_final_mapa.png)
+*Figura 1: Estado final de la simulación. Los puntos azules representan agentes felices y los amarillos/rojos agentes infelices.*
+
 > **Fenómeno Observado:** Los agentes ricos crean "burbujas de bienestar" aislándose de la infelicidad sistémica de los agentes pobres. El dinero actúa como un escudo emocional.
 
 ### Análisis de la Brecha Salarial
@@ -27,16 +30,32 @@ Para evaluar la sensibilidad del modelo, se realizaron ejecuciones modificando e
 
 ### Escenario 1: Sociedad Post-Materialista ($\alpha \approx 0.2$)
 Simulamos una cultura que valora más el tiempo disponible ($R$) que el capital ($E$).
+
+![Sociedad Post-Materialista](../assets/images/no_materialista.png)
+*Figura 2: Evolución en entorno de Bajo Materialismo. Se observa una predominancia de agentes felices dispersos homogéneamente.*
+
 *   **Resultado:** Desacople entre ingreso y bienestar.
 *   **Interpretación:** Sociedad resiliente a la pobreza económica. La cohesión social se mantiene alta. _"Pobreza feliz"._
 
 ### Escenario 2: Sociedad Hiper-Materialista ($\alpha \approx 0.8$)
 Configuramos una sociedad donde la felicidad depende casi exclusivamente del nivel de ingresos.
+
+![Sociedad Hiper-Materialista](../assets/images/materialista.png)
+*Figura 3: Resultados del escenario hiper-materialista: polarización extrema y segregación espacial.*
+
 *   **Resultado:** Polarización extrema. La felicidad se convierte en un bien exclusivo de las clases altas.
 *   **Interpretación:** Ansiedad de estatus. Segregación máxima. Los ricos se aíslan rápidamente para proteger su bienestar.
 
 ### Escenario 3: Impacto de Políticas Redistributivas (SMI Variable)
 Introducimos un **Salario Mínimo Interprofesional (SMI)** dinámico.
+
+![Comparativa SMI](../assets/images/smi_medio.png)
+*Figura 4: Impacto de un SMI Moderado.*
+
+| SMI Bajo (750€) | SMI Alto (3000€) |
+| :---: | :---: |
+| ![SMI Bajo](../assets/images/smi_bajo.png) | ![SMI Alto](../assets/images/smi_alto.png) |
+
 *   **Resultado:** El aumento del SMI actúa como un **"ascensor emocional"**.
 *   **Interpretación:** Garantizar la suficiencia material reactiva la sociabilidad en la base de la pirámide.
 

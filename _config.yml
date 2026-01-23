@@ -25,3 +25,7 @@ call_outs:
   important:
     title: Importante
     color: purple
+
+# Math Support
+kramdown:
+  math_engine: mathjax

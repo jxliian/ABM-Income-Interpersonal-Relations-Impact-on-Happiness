@@ -2,6 +2,20 @@
 
 # Dinámicas de Segregación Socioeconómica y Contagio Emocional en Redes Sociales
 
+> [!TIP]
+> **Web del Proyecto (Documentación Online)**
+> Puedes consultar la documentación completa, resultados interactivos y metodología en nuestra página web:
+> 👉 **[https://jxliian.github.io/ABM-Income-Interpersonal-Relations-Impact-on-Happiness](https://jxliian.github.io/ABM-Income-Interpersonal-Relations-Impact-on-Happiness)**
+
+> [!CAUTION]
+> **Estructura de la Web (GitHub Pages)**
+> Los siguientes archivos y carpetas son **exclusivos para la generación de la página web** y no deben modificarse a menos que se quiera alterar el sitio:
+> *   `github_pages/` (Contenido de documentación)
+> *   `assets/` (Estilos CSS e imágenes web)
+> *   `_includes/` (Configuración avanzada de Jekyl/HTML)
+> *   `_config.yml` (Configuración del tema)
+> *   `index.md` (Página de inicio de la web)
+
 Este repositorio implementa un **Modelo Basado en Agentes (ABM)** en Python para simular la dinámica de la felicidad, la segregación económica y la sociabilidad en redes sociales. El proyecto utiliza microdatos reales del **Centro de Investigaciones Sociológicas (CIS)** para calibrar los agentes, trascendiendo los modelos puramente teóricos.
 
 El objetivo central es investigar si la segregación espacial (la formación de "cámaras de eco") actúa como un mecanismo estructural que modula el bienestar subjetivo, analizando la interacción entre el capital económico, el tiempo disponible y el contagio emocional.
