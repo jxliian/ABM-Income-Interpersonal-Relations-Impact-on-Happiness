@@ -85,6 +85,19 @@ Este comando leerá el archivo y creará un entorno aislado llamado **`abm_semin
 
 ---
 
+## Ejecutable para Windows (Sin Instalación)
+
+Si deseas ejecutar la aplicación en Windows sin instalar Python ni Anaconda, hemos configurado un sistema de **Construcción Automática** en GitHub.
+
+1.  Ve a la pestaña **[Actions](https://github.com/jxliian/ABM-Income-Interpersonal-Relations-Impact-on-Happiness/actions)** de este repositorio.
+2.  Haz clic en el último flujo de trabajo ejecutado ("Build Windows Executable").
+3.  Abajo, en la sección **Artifacts**, encontrarás un archivo zip llamado `ABM_Happiness_Tool_Windows`.
+4.  Descárgalo, descomprímelo y ejecuta `ABM_Happiness_Tool.exe`.
+
+> **Nota:** Al ser un ejecutable no firmado, Windows podría mostrar una advertencia de seguridad. Haz clic en "Más información" -> "Ejecutar de todas formas".
+
+---
+
 ## Uso del Entorno
 
 Debes activar el entorno `abm_seminario` cada vez que trabajes en el proyecto para asegurar que Python cargue las versiones correctas de las librerías.
