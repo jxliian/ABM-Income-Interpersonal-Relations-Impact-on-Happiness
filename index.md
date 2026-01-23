@@ -4,6 +4,8 @@ title: Inicio
 nav_order: 1
 ---
 
+![Banner del Proyecto](./assets/images/portada_github.png)
+
 # Dinámicas de Segregación Socioeconómica y Contagio Emocional
 {: .fs-9 }
 {: .fw-700 }
