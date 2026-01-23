@@ -1,5 +1,5 @@
 title: ABM Segregación y Felicidad
-description: Dinámicas de Segregación Socioeconómica y Contagio Emocional
+description: Dinámicas de Segregación Socioeconómica y Contagio Emocional en Redes Sociales
 # CAMBIO IMPORTANTE: Usamos remote_theme en vez de theme
 remote_theme: just-the-docs/just-the-docs
 
@@ -7,7 +7,21 @@ url: https://jxliian.github.io
 baseurl: /ABM-Income-Interpersonal-Relations-Impact-on-Happiness
 
 aux_links:
-  "Ver Repo en GitHub":
+  "Ver Repositorio en GitHub":
     - "//github.com/jxliian/ABM-Income-Interpersonal-Relations-Impact-on-Happiness"
 
 color_scheme: dark
+
+search_enabled: true
+heading_anchors: true
+
+call_outs:
+  warning:
+    title: Advertencia
+    color: red
+  note:
+    title: Nota
+    color: blue
+  important:
+    title: Importante
+    color: purple

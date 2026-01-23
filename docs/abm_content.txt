@@ -1,0 +1,596 @@
+Universidad de Granada
+Doble Grado en Ingenierı́a Informática y
+Administración y Dirección de Empresas
+Asignatura: Economı́a Mundial
+
+Dinámicas de Segregación
+Socioeconómica y Contagio
+Emocional en Redes Sociales
+Un enfoque basado en Agentes (ABM) con datos del CIS
+
+Autores:
+Julián Carrión Tovar
+Fernando Jose Gracia Choin
+
+Supervisado por:
+Prof. José Luis Sáez Lozano
+Faculty of Economic and Business Sciences, office B-301
+Campus Universitario de La Cartuja 18071 Granada
+Phone: 958240927 · E-mail: josaez@ugr.es
+
+Granada, 24 de diciembre de 2025
+2
+
+Índice
+1. Introducción
+
+3
+
+2. Revisión de la literatura
+
+5
+
+3. Hipótesis, Datos y Metodologı́a
+3.1. Modelo Analı́tico e Hipótesis . . . . . . . . . . . . . . . . . . . . . . .
+3.2. Datos y Fuentes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.3. Metodologı́a . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3.4. Calibración y Validación . . . . . . . . . . . . . . . . . . . . . . . . .
+
+6
+6
+7
+7
+8
+
+4. Resultados de la Simulación
+9
+4.1. Segregación Espacial (Cámaras de Eco) . . . . . . . . . . . . . . . . . 9
+4.2. Análisis de la Brecha Salarial . . . . . . . . . . . . . . . . . . . . . . 9
+4.3. La Inercia de la Infelicidad . . . . . . . . . . . . . . . . . . . . . . . . 10
+4.4. El Dinero como Escudo Emocional . . . . . . . . . . . . . . . . . . . 10
+5. Ejecuciones y Análisis de Escenarios
+5.1. Escenario 1: Sociedad Post-Materialista (α ≈ 0,2) . . . . . . . . . . .
+5.2. Escenario 2: Sociedad Hiper-Materialista (α ≈ 0,8) . . . . . . . . . .
+5.3. Sı́ntesis Comparativa . . . . . . . . . . . . . . . . . . . . . . . . . . .
+5.4. Escenario 3: Impacto de Polı́ticas Redistributivas (SMI Variable) . . .
+5.5. Sı́ntesis General de Escenarios . . . . . . . . . . . . . . . . . . . . . .
+
+11
+12
+13
+13
+15
+16
+
+6. Conclusiones
+
+17
+
+1
+
+Resumen
+Si bien la literatura económica clásica cuestiona la linealidad entre renta
+y bienestar (Paradoja de Easterlin), los análisis estadı́sticos estáticos resultan
+insuficientes para capturar la complejidad de las dinámicas emocionales en
+entornos digitales. Este trabajo aborda dicha brecha investigando cómo la
+homofilia socioeconómica y el contagio emocional interactúan para configurar
+la distribución de la felicidad en las redes sociales.
+Para ello, se utilizan microdatos empı́ricos del Centro de Investigaciones
+Sociológicas (CIS) correspondientes a usuarios de Facebook, Instagram y X
+(Twitter), integrando variables de ingresos y bienestar subjetivo. Metodológicamente, se implementa un Modelo Basado en Agentes (ABM) calibrado mediante funciones de utilidad Cobb-Douglas adaptadas al tiempo disponible y
+reglas de movimiento estocásticas.
+Los resultados revelan que, pese a una correlación lineal marginal entre
+dinero y felicidad, el capital económico actúa como un mecanismo de segregación estructural determinante, generando -cámaras de eco- de bienestar.
+Asimismo, el modelo valida el teorema de la Resonancia Social Inversa (propuesta por los precursores de este estudio), demostrando que la sociabilidad es
+una propiedad emergente condicionada por el nivel de materialismo cultural
+(α) y la disponibilidad de tiempo, más allá del simple poder adquisitivo.
+
+Keywords: Modelado Basado en Agentes (ABM), Bienestar Subjetivo, Redes Sociales, Segregación Económica, Homofilia, Contagio Social, Paradoja de Easterlin.
+JEL Classification: C63, I31, Z13.
+
+2
+
+1.
+
+Introducción
+
+La relación entre el capital económico y el bienestar subjetivo constituye uno de los
+ejes centrales de debate en la sociologı́a y economı́a contemporáneas, especialmente
+tras la formulación de paradojas que cuestionan la asunción clásica de que un mayor nivel de renta se traduce linealmente en una mayor felicidad. Hasta la fecha, la
+literatura ha evidenciado que esta relación es compleja y no monotónica, sugiriendo
+que, una vez cubiertas las necesidades básicas, el incremento del ingreso tiene rendimientos decrecientes sobre el bienestar percibido, una dinámica que se ve alterada
+sustancialmente en la era digital por los mecanismos de visibilidad y comparación
+constante.
+Respecto al bienestar subjetivo, la evidencia acumulada sugiere que los análisis estadı́sticos tradicionales a menudo fallan al intentar capturar la complejidad de este
+fenómeno, arrojando correlaciones lineales simples que suelen ser débiles o contradictorias. Se ha constatado que la felicidad no es una variable estática dependiente
+únicamente de factores materiales absolutos, sino una construcción relativa fuertemente condicionada por la posición del individuo respecto a su grupo de referencia
+y la percepción de desigualdad, lo que explica la persistencia de la infelicidad en
+entornos de privación relativa incluso cuando existen ingresos medios.
+Por otro lado, en lo concerniente a los entornos de interacción social, sabemos que
+las plataformas digitales actúan como catalizadores de dinámicas de segregación y
+comparación social. Las redes sociales no son espacios neutrales, sino que exacerban
+la visibilidad selectiva y facilitan la agrupación de individuos con caracterı́sticas
+similares, alterando la percepción de la realidad económica y permitiendo que los
+mecanismos de exclusión o protección grupal operen con mayor velocidad y eficiencia
+que en el mundo fı́sico.
+A pesar de estos avances, existe una notable laguna cientı́fica en la intersección de
+ambos campos: hasta ahora, la literatura ha carecido de enfoques que integren datos
+microeconómicos reales en modelos dinámicos de simulación. La mayorı́a de estudios
+se han limitado a modelos econométricos estáticos que no pueden capturar las propiedades emergentes del sistema, y no se ha publicado investigación suficiente que
+utilice el Modelado Basado en Agentes (ABM) alimentado con datos empı́ricos para
+analizar cómo la segregación espacial espontánea en redes actúa como un mecanismo
+regulador del bienestar subjetivo frente a la desigualdad económica.
+El objetivo principal de este trabajo es, por tanto, analizar si la segregación espacial —la formación de cámaras de eco económicas— actúa como un mecanismo
+estructural que protege el bienestar de las clases altas y atrapa en la infelicidad a
+los estratos inferiores, determinando cómo interactúan las fuerzas de homofilia y
+contagio emocional en este proceso.
+Nuestro planteamiento parte de la asunción de que los individuos operan bajo racionalidad limitada y buscan minimizar la disonancia cognitiva agrupándose con pares
+de estatus socioeconómico similar (homofilia económica). Asimismo, asumimos que
+el estado anı́mico no es aislado, sino permeable a la influencia del entorno local
+(contagio emocional), y que la utilidad individual se rige por una función de tipo
+3
+
+Cobb-Douglas que pondera tanto el capital económico como el tiempo disponible,
+modulada por el nivel de materialismo cultural.
+Teóricamente, postulamos que la felicidad en entornos digitales es una propiedad
+emergente del sistema y no una simple función directa del ingreso. Sostenemos que
+la falta de correlación lineal observada en los datos estáticos se explica porque el
+dinero permite a los agentes çomprar”su segregación hacia entornos emocionalmente
+favorables, creando burbujas de bienestar que son inaccesibles para los agentes con
+menores recursos, quienes quedan expuestos a la infelicidad sistémica de su entorno.
+Para contrastar estas hipótesis, utilizamos microdatos procedentes del Centro de Investigaciones Sociológicas (CIS), integrando variables especı́ficas de ingresos (P65 ),
+jornada laboral (P60A) y felicidad subjetiva (P69 ) de usuarios reales de redes sociales como Facebook, Instagram y X (Twitter).
+Con los datos disponibles, utilizamos la metodologı́a de Modelado Basado en Agentes (ABM) implementada en Python para contrastar nuestro planteamiento teórico.
+Esta técnica computacional nos permite simular la interacción de individuos autónomos en una topologı́a de red y observar los patrones macroscópicos de segregación
+y bienestar que emergen de las reglas de comportamiento individual y los datos
+empı́ricos inyectados.
+El resto del artı́culo se organiza de la siguiente manera: la sección 2 detalla la revisión
+de la literatura, posteriormente, la sección 3 el marco teórico y la formalización
+matemática del modelo junto a la metodologı́a, los datos y las reglas de los agentes;
+la sección 4 presenta los resultados de la simulación y el análisis de escenarios; y
+finalmente, la sección 5 y 6, ofrecen ejecuciones respaldadas por conclusiones y las
+implicaciones de los hallazgos, respectivamente.
+
+4
+
+2.
+
+Revisión de la literatura
+
+El estudio del bienestar subjetivo y su relación con las variables económicas ha generado una vasta literatura desde que Easterlin (1974) formulara su célebre paradoja,
+cuestionando la correlación directa entre el crecimiento económico y el aumento de
+la felicidad a largo plazo. Investigaciones posteriores, como las de Kahneman y Deaton (2010), matizaron estos hallazgos, distinguiendo entre la evaluación de la vida
+(que mejora con el ingreso) y el bienestar emocional (que se satura a partir de cierto
+umbral de renta). Estudios más recientes han ampliado el foco hacia determinantes
+no monetarios, destacando el papel crucial de las relaciones interpersonales y el capital social como predictores de felicidad más robustos que el ingreso per cápita en
+contextos de privación relativa (Helliwell et al., 2012).
+Paralelamente, el análisis de la dinámica social en entornos descentralizados se ha
+nutrido de los modelos de segregación espacial, cuyo exponente fundacional es el
+trabajo de Schelling (1971). Su modelo demostró cómo preferencias individuales
+moderadas por convivir con semejantes (homofilia) pueden generar patrones macroscópicos de segregación estricta sin necesidad de una coordinación centralizada.
+En el ámbito digital, McPherson et al. (2001) consolidaron el concepto de homofilia
+como el principio estructurante de las redes sociales, mientras que estudios sobre la
+topologı́a de redes han evidenciado cómo estas estructuras facilitan la formación de
+-cámaras de eco- que aı́slan a los individuos en burbujas informativas y emocionales
+(Barberá et al., 2015).
+La literatura que conecta especı́ficamente la estratificación socioeconómica con el
+contagio emocional en redes presenta diversas lı́neas de investigación, aunque escasos
+modelos integrales. Una primera lı́nea se centra en la transmisión del bienestar,
+donde Fowler y Christakis (2008) demostraron empı́ricamente que la felicidad se
+propaga a través de redes sociales hasta tres grados de separación, sugiriendo que
+el bienestar es un fenómeno colectivo dependiente de la estructura de la red. Sin
+embargo, investigaciones más recientes han introducido la variable de la desigualdad,
+señalando que la visibilidad de la riqueza en redes sociales exacerba la ansiedad de
+estatus y la privación relativa. Kross et al. (2013) hallaron que el uso pasivo de redes
+sociales predice una disminución del bienestar subjetivo, un efecto mediado por la
+comparación social ascendente. A pesar de estos hallazgos, existe una carencia de
+estudios que utilicen el Modelado Basado en Agentes (ABM) para simular cómo la
+segregación económica endógena actúa como barrera para este contagio emocional,
+protegiendo el bienestar de los grupos de renta alta a costa del aislamiento de los
+estratos inferiores, una laguna que este trabajo pretende abordar.
+
+5
+
+3.
+
+Hipótesis, Datos y Metodologı́a
+
+Este epı́grafe se estructura en tres bloques fundamentales para la validación empı́rica
+de la investigación. En primer lugar, se formaliza el modelo analı́tico y las hipótesis
+de comportamiento que rigen a los agentes. En segundo lugar, se describen los microdatos y las fuentes estadı́sticas utilizadas para calibrar la simulación. Finalmente,
+se detalla la metodologı́a computacional de simulación basada en agentes (ABM)
+empleada para reproducir las dinámicas emergentes y contrastar el planteamiento
+teórico.
+Como se anticipó en la introducción, el objetivo central de este estudio es determinar
+si la segregación espacial espontánea —la formación de cámaras de eco económicas—
+actúa como un mecanismo estructural que modula el bienestar subjetivo, analizando
+la interacción entre la homofilia socioeconómica y el contagio emocional en redes
+sociales digitales.
+Es necesario, no obstante, reconocer las limitaciones inherentes al diseño de esta
+investigación. Respecto a los datos, la muestra se restringe a usuarios de redes sociales captados en la encuesta del CIS (Estudio 3145), lo que acota la validez externa
+de los resultados al contexto sociodemográfico español y a un corte transversal temporal especı́fico. En cuanto al modelo, la adopción de una función de utilidad tipo
+Cobb-Douglas supone una simplificación de la psicologı́a humana, asumiendo una
+racionalidad limitada que podrı́a no capturar la totalidad de variables subjetivas.
+Finalmente, la metodologı́a ABM, aunque robusta para capturar patrones emergentes, opera bajo supuestos estocásticos y reglas heurı́sticas (como el movimiento
+aleatorio ante la insatisfacción) que constituyen una abstracción de la movilidad
+social real.
+
+3.1.
+
+Modelo Analı́tico e Hipótesis
+
+El modelo teórico se fundamenta en la premisa de que el bienestar subjetivo (H)
+no es una variable exógena, sino el resultado de una función de producción de utilidad que combina Capital Económico (E) y Tiempo Disponible (R). Formalizamos
+esta relación mediante una función Cobb-Douglas adaptada, donde el parámetro α
+representa la elasticidad cultural o ”materialismo”del agente:
+Hi,t=0 = (Eiα · Ri1−α )
+
+(1)
+
+Adicionalmente, introducimos la hipótesis de la Resonancia Social Inversa, la cual
+postula que la capacidad de interacción social (S) es una propiedad dependiente del
+nivel de felicidad acumulada, modelada como:
+Si = Hi · (1 + Hi1−α )
+
+(2)
+
+La dinámica del sistema se rige por la ecuación de actualización del estado anı́mico,
+que será la base de la estimación en la simulación. Esta ecuación integra la inercia
+personal y el contagio social:
+6
+
+Hi,t+1 = Hi,t + λ(Hbase,i − Hi,t ) + γ(H̄vecinos − Hi,t ) + ϵ
+
+(3)
+
+Donde λ representa la resiliencia psicológica (tendencia a volver al estado base) y γ
+el coeficiente de permeabilidad al contagio emocional del entorno local.
+
+3.2.
+
+Datos y Fuentes
+
+Para la calibración empı́rica del modelo, se han utilizado los microdatos del Estudio
+3145 del Centro de Investigaciones Sociológicas (CIS). La base de datos original ha
+sido depurada para extraer una submuestra representativa de usuarios activos en
+redes sociales (Facebook, Instagram y X/Twitter).
+Las variables seleccionadas para alimentar los atributos de los agentes son:
+Ingresos (E): Operacionalizada mediante la variable P65 (Ingresos netos
+mensuales del hogar), normalizada en una escala de 1 a 10.
+Tiempo (R): Calculada a partir de la variable P60A (Jornada laboral), definiendo el tiempo disponible como el remanente de una jornada estándar de
+24 horas.
+Felicidad Declarada (Hreal ): Variable P69, utilizada exclusivamente para la
+validación y calibración inicial del modelo, pero no como input dinámico.
+El tratamiento de los datos incluyó la eliminación de valores perdidos (NP/NC) y
+la normalización de escalas para garantizar la coherencia matemática con la función
+Cobb-Douglas propuesta. De modo aclarativo, se pueden consultar las preguntas en
+especı́fico si se desea procediendo al final de este mismo documento donde se citan
+las diferentes referencias y fuentes usadas.
+
+3.3.
+
+Metodologı́a
+
+Para el análisis empı́rico, se ha implementado un Modelo Basado en Agentes
+(ABM) utilizando la librerı́a Mesa en lenguaje Python. Esta metodologı́a permite
+simular sistemas complejos donde el comportamiento agregado emerge de las interacciones individuales descentralizadas.
+El entorno de simulación se define como una grilla toroidal de dimensiones 30 × 30,
+poblada por N = 300 agentes heterogéneos inicializados con los microdatos reales
+descritos anteriormente. El algoritmo de ejecución sigue una secuencia iterativa discreta (pasos de tiempo t) bajo las siguientes reglas de operación:
+1. Evaluación de Entorno: Cada agente escanea su vecindad de Moore (8
+celdas adyacentes) para calcular la diferencia media de ingresos y felicidad.
+2. Regla de Movimiento (Segregación): Si la disonancia económica supera
+un umbral δ o la felicidad cae por debajo de un nivel crı́tico (H < 2,5), el
+agente busca una nueva ubicación, replicando la dinámica de Schelling.
+
+7
+
+3. Actualización de Estado: En cada paso, los agentes recalculan su felicidad
+aplicando la ecuación (3), integrando el impacto del salario mı́nimo (si aplica)
+y la influencia emocional de sus nuevos vecinos.
+Esta metodologı́a permite aislar el efecto de variables especı́ficas (como el parámetro
+α) y observar la evolución temporal de la segregación y la brecha de bienestar,
+superando las limitaciones estáticas de los modelos de regresión tradicionales.
+
+3.4.
+
+Calibración y Validación
+
+Previo a la simulación dinámica, se realizó un análisis de correlación de Pearson
+entre los datos de Ingresos Reales y Felicidad Declarada en la muestra estática.
+
+8
+
+4.
+
+Resultados de la Simulación
+
+4.1.
+
+Segregación Espacial (Cámaras de Eco)
+
+La simulación muestra una rápida transición de una distribución aleatoria a una estructura altamente segregada. Como se observa en el mapa de agentes final, emergen
+”barrios digitales”homogéneos económicamente.
+
+Figura 1: Estado final de la simulación. Los puntos azules representan agentes felices
+(H ≥ 3,0) y los amarillos agentes infelices o menos felices. Se observa la agrupación
+por clústeres.
+
+4.2.
+
+Análisis de la Brecha Salarial
+
+El monitor en tiempo real revela una brecha salarial persistente y significativa entre
+los grupos felices e infelices, incluso cuando la correlación inicial era baja.
+Grupo
+Felices (H ≥ 3,0)
+Infelices (H < 3,0)
+
+Sueldo Medio (€) Población Aprox.
+2,691 €
+≈ 8%
+1,275 €
+≈ 92 %
+
+Cuadro 1: Estadı́sticas finales promediadas tras la estabilización.
+
+9
+
+4.3.
+
+La Inercia de la Infelicidad
+
+Uno de los hallazgos más relevantes es la resistencia de la infelicidad. A pesar de los
+mecanismos de búsqueda de bienestar (movimiento de los agentes infelices), el grupo
+infeliz tiende a ser mayoritario y estable. Esto se debe a la -Inercia de Personalidadimplementada: el entorno puede mejorar el bienestar momentáneamente, pero la
+tendencia estructural del individuo (datos reales del CIS) pesa más a largo plazo.
+
+4.4.
+
+El Dinero como Escudo Emocional
+
+Aunque el dinero no da la felicidad directa en nuestro modelo calibrado, actúa como
+un mecanismo de segregación. Los agentes ricos se aı́slan de la infelicidad sistémica
+de los agentes pobres, creando ”burbujas de bienestar”que se retroalimentan positivamente mediante el contagio emocional.
+
+10
+
+5.
+
+Ejecuciones y Análisis de Escenarios
+
+Para evaluar la sensibilidad del modelo y validar las hipótesis planteadas sobre la
+relación entre ingresos y bienestar, se han realizado ejecuciones bajo dos configuraciones culturales extremas. Estas simulaciones modifican exclusivamente el parámetro
+de elasticidad α (materialismo) en la función Cobb-Douglas, manteniendo constantes
+el resto de variables demográficas provenientes del CIS.
+
+11
+
+5.1.
+
+Escenario 1: Sociedad Post-Materialista (α ≈ 0,2)
+
+En este primer escenario, simulamos una cultura donde la función de utilidad de los
+agentes valora significativamente más el tiempo disponible y el ocio que la acumulación de capital económico.
+Fenómeno Observado: Se produce un desacople evidente entre ingreso y bienestar. Observamos una población mayoritariamente feliz (agentes azules), incluso en
+estratos de renta baja (sueldos < 1,200).
+Interpretación Sociológica: Este resultado es consistente con la teorı́a postmaterialista y la Paradoja de Easterlin. Al reducir la presión por el estatus económico, los agentes logran satisfacer su umbral de felicidad mediante recursos no monetarios. Esto genera una sociedad resiliente a la pobreza económica, donde la ’pobreza
+infeliz’ es residual y la cohesión social se mantiene alta independientemente del ciclo
+económico.
+
+(a) Evolución Global
+
+(b) Mapa de Agentes
+
+(c) Datos Segregación
+
+Figura 2: Evolución en entorno de Bajo Materialismo. Se observa una predominancia
+de agentes felices (azul) dispersos homogéneamente.
+
+12
+
+5.2.
+
+Escenario 2: Sociedad Hiper-Materialista (α ≈ 0,8)
+
+En el segundo escenario, configuramos una sociedad donde la felicidad depende casi
+exclusivamente del nivel de ingresos (E), relegando el tiempo libre a un segundo
+plano.
+Fenómeno Observado: El modelo arroja una polarización extrema del bienestar.
+La felicidad se convierte en un bien exclusivo de las clases altas. El mapa muestra
+una vasta mayorı́a de agentes infelices (puntos rojos) atrapados en la trampa de
+ingresos bajos, mientras que el bienestar queda restringido a una minorı́a con ingresos
+superiores a 3.000.
+Interpretación Sociológica: Esto simula el efecto de la Ansiedad de Estatus. En
+entornos de consumo agresivo, la mayorı́a experimenta privación relativa. La segregación aquı́ es máxima: los ricos felices se aı́slan rápidamente en clústeres cerrados
+para proteger su bienestar del contagio negativo de la masa infeliz, creando una
+brecha emocional insalvable.
+
+(a) Evolución Global
+
+(b) Mapa de Agentes
+
+(c) Datos Segregación
+
+Figura 3: Resultados del escenario hiper-materialista: polarización extrema y segregación espacial.
+
+5.3.
+
+Sı́ntesis Comparativa
+
+La comparación visual y estadı́stica entre ambos escenarios revela que el parámetro
+cultural α actúa como un modulador de la desigualdad social. Mientras que una
+13
+
+sociedad post-materialista amortigua los efectos de la pobreza económica sobre el
+ánimo individual, una sociedad materialista los exacerba, convirtiendo la desigualdad económica directamente en desigualdad emocional.
+
+14
+
+5.4.
+
+Escenario 3: Impacto de Polı́ticas Redistributivas (SMI
+Variable)
+
+En este tercer escenario, fijamos un parámetro cultural estable de materialismo
+moderado (α = 0,6) e introducimos una variable dinámica exógena: la modificación
+del Salario Mı́nimo Interprofesional (SMI) en tiempo real.
+Fenómeno Observado: Se observa una correlación positiva directa y no lineal entre
+el incremento del suelo salarial y el bienestar agregado. Partiendo de una situación
+precaria (SMI = 750), el aumento progresivo del SMI actúa como un ’ascensor
+emocional’ para los agentes de la base de la pirámide. Al elevar el suelo de ingresos,
+los puntos rojos (infelicidad extrema) se transforman sistemáticamente en estados
+neutros o felices, aumentando no solo su bienestar individual sino su sociabilidad,
+reactivando la interacción en zonas previamente deprimidas.
+Interpretación Sociológica: Este escenario valida la hipótesis de la Suficiencia
+Material. El ingreso actúa aquı́ como un habilitador de la sociabilidad. Al eliminar
+la privación severa mediante un SMI robusto, los agentes recuperan su ’ancho de
+banda cognitivo’ y emocional para interactuar. El modelo demuestra que, bajo una
+cultura de materialismo moderado, garantizar la dignidad material es más eficiente
+para la cohesión social global que el simple crecimiento de la riqueza en los estratos
+superiores.
+
+(a) SMI Precarizado (750)
+
+(b) SMI Moderado (1.500)
+
+(c) SMI Robusto (3.000)
+
+Figura 4: Evolución del bienestar ante aumentos del Salario Mı́nimo. Nótese la desaparición progresiva de los agentes infelices (rojos) y el aumento de la densidad de
+conexiones sociales a medida que se garantiza la suficiencia económica.
+
+15
+
+(a) SMI Precarizado (750)
+
+(b) SMI Moderado (1.500)
+
+(c) SMI Robusto (3.000)
+
+Figura 5: Distribución de agentes según salarios, una vez aplicado el filtro del SMI.
+
+5.5.
+
+Sı́ntesis General de Escenarios
+
+El análisis conjunto de los tres escenarios permite concluir que el bienestar en redes
+sociales es un fenómeno multifactorial. Mientras que la cultura (α) determina la
+sensibilidad al dinero, la polı́tica económica (SMI) determina la capacidad base para
+participar en la vida social. La combinación más nociva para la cohesión social resulta
+ser una cultura hiper-materialista (α → 1) combinada con una baja protección
+salarial, escenario que maximiza la segregación y la infelicidad sistémica.
+
+16
+
+6.
+
+Conclusiones
+
+La principal aportación teórica de este estudio radica en la formalización del teorema
+de la Resonancia Social Inversa dentro de un modelo basado en agentes (ABM),
+integrando una función de utilidad Cobb-Douglas que pondera el capital económico
+y el tiempo disponible bajo restricciones de materialismo cultural. Empı́ricamente,
+el hallazgo más revelador —que transciende la literatura previa— es la relación entre
+ingresos reales y felicidad declarada, demostrando simultáneamente que el dinero no
+actúa como un generador directo de bienestar, sino como un mecanismo de filtrado
+estructural que permite a los agentes acceder a ”burbujas de bienestar”segregadas
+espacialmente, protegiéndose del contagio emocional negativo.
+La relevancia de estos hallazgos estriba en que cuestionan la validez de los modelos
+econométricos estáticos para entender la felicidad en entornos digitales. Al demostrar
+que la sociabilidad digital es un ”lujo emocional”dependiente del bienestar inicial,
+evidenciamos que las redes sociales sufren un sesgo de supervivencia sistémico: subrepresentan la voz de los estratos más infelices que, aunque presentes, carecen del
+capital anı́mico para interactuar. Esto redefine la desigualdad digital no solo como
+una brecha de acceso tecnológico, sino como una brecha de participación emocional
+condicionada por la estructura de la red.
+En comparación con la literatura clásica sobre la Paradoja de Easterlin, que ya
+cuestionaba la relación lineal entre renta y felicidad, nuestra investigación añade
+una dimensión espacial y dinámica crucial. Mientras que los estudios tradicionales
+observaban el fenómeno de forma agregada, nuestro modelo desvela que la segregación (cámaras de eco económicas) es la variable interviniente que explica por qué los
+ricos son más felices: no por el dinero en sı́, sino por su capacidad para aislarse de
+la infelicidad sistémica. Esto matiza las teorı́as previas de homofilia, sugiriendo que
+esta no es solo una preferencia social, sino una estrategia adaptativa de preservación
+del bienestar.
+De los resultados se extrapola el principio de que la homofilia humana es condición suficiente, sin necesidad de algoritmos de recomendación opacos, para fracturar
+una red social en clústeres estancos de polarización. Asimismo, se establece que el
+parámetro cultural de materialismo (α) actúa como el modulador definitivo de la
+desigualdad social. Por el contrario, la proposición habitual en la literatura de consumo que vincula directamente el poder adquisitivo con la satisfacción vital no ha sido
+corroborada en este entorno; en su lugar, se ha validado que el ’tiempo disponible’
+es un predictor de resiliencia mucho más robusto en sociedades post-materialistas.
+En términos de polı́tica económica, las simulaciones del escenario con Salario Mı́nimo Interprofesional (SMI) dinámico sugieren que las polı́ticas redistributivas actúan
+como un ’ascensor emocional’ efectivo. Garantizar la suficiencia material en la base
+de la pirámide no solo mejora el bienestar individual, sino que reactivó la conectividad y cohesión social global en el modelo. Esto implica que las polı́ticas públicas
+deben priorizar la reducción de la privación severa para evitar la formación de guetos
+de infelicidad que, a largo plazo, desestabilizan la estructura social de la red.
+Finalmente, de esta investigación se deduce la necesidad de que futuros trabajos
+17
+
+abandonen las métricas estáticas de ingreso y se centren en la ’disponibilidad temporal’ y los factores culturales como ejes de análisis. Serı́a pertinente replicar este
+modelo introduciendo un parámetro α dinámico que evolucione con el tiempo, permitiendo estudiar cómo una sociedad puede transitar de un estado hiper-materialista
+a uno post-materialista, y validar si la Resonancia Social Inversa se mantiene constante en otras plataformas digitales con arquitecturas de interacción diferentes a las
+estudiadas.
+
+18
+
+Agradecimientos
+Agradecemos al Centro de Investigaciones Sociológicas (CIS) la autorización y facilitación de acceso a la base de datos del Estudio 3145, cuyas variables de ingresos
+y bienestar subjetivo han sido fundamentales para la calibración empı́rica de este
+modelo.
+
+Referencias
+[1] Carrión Tovar, J. y Gracia Choin, F. J., 2025, ABM-Income-InterpersonalRelations-Impact-on-Happiness: Código Fuente y Documentación del Modelo. Repositorio GitHub. Disponible en: https://github.com/jxliian/
+ABM-Income-Interpersonal-Relations-Impact-on-Happiness
+[2] Centro
+de
+Investigaciones
+Sociológicas
+(CIS),
+2016,
+“Cuestionario
+del
+Estudio
+3145:
+Metodologı́a
+de
+Encuesta”.
+Madrid:
+CIS.
+Recuperado
+de:
+https://github.com/jxliian/
+ABM-Income-Interpersonal-Relations-Impact-on-Happiness/blob/
+main/docs/cues3145%5B602%5D.pdf
+[3] Ibarra-López, I. y Rojas, M., s.f., “Happiness and Human Relations”.
+Dialnet.
+Recuperado
+de:
+https://github.com/jxliian/
+ABM-Income-Interpersonal-Relations-Impact-on-Happiness/blob/
+main/docs/Dialnet-HappinessAndHumanRelations-4728090.pdf
+[4] Easterlin, R. A., 1974, “Does Economic Growth Improve the Human Lot? Some Empirical Evidence”. En P. A. David y M. W. Reder (eds.), Nations and
+Households in Economic Growth: 89-125. New York: Academic Press.
+[5] Kahneman, D. y Deaton, A., 2010, “High income improves evaluation of life
+but not emotional well-being”, Proceedings of the National Academy of Sciences
+(PNAS), 107(38): 16489-16493.
+[6] Helliwell, J. F.; Layard, R. y Sachs, J. (eds.), 2012, World Happiness Report
+2012. New York: UN Sustainable Development Solutions Network.
+[7] Schelling, T. C., 1971, “Dynamic models of segregation”, Journal of Mathematical Sociology, 1(2): 143-186.
+[8] McPherson, M.; Smith-Lovin, L. y Cook, J. M., 2001, “Birds of a Feather:
+Homophily in Social Networks”, Annual Review of Sociology, 27: 415-444.
+[9] Barberá, P. et al., 2015, “Tweeting From Left to Right: Is Online Political
+Communication More Than an Echo Chamber?”, Psychological Science, 26(10):
+1531-1542.
+[10] Fowler, J. H. y Christakis, N. A., 2008, “Dynamic spread of happiness in a large
+social network”, BMJ, 337: a2338.
+[11] Kross, E. et al., 2013, “Facebook Use Predicts Declines in Subjective Well-Being
+in Young Adults”, PLoS ONE, 8(8): e69841.
+19
+
+[12] Cobb, C. W. y Douglas, P. H., 1928, “A Theory of Production”, The American
+Economic Review, 18(1): 139–165.
+[13] Masad, D. y Kazil, J., 2015, “Mesa: An Agent-Based Modeling Framework in
+Python”, 14th Python in Science Conference (SCIPY 2015): 53-60. Austin,
+Texas.
+
+20
+
+

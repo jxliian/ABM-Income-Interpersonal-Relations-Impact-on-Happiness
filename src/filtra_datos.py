@@ -1,5 +1,7 @@
 import pandas as pd
 import os
+import sys
+import sys
 
 def procesar_datos_social_media(social_media_key, columna_red_social):
     """
@@ -12,15 +14,19 @@ def procesar_datos_social_media(social_media_key, columna_red_social):
     
     # 1. Definir Rutas Portables
     
-    # IMPORTANTE: Estas rutas son relativas a la carpeta donde se ejecuta el script.
-    # Asumimos que el script se ejecuta desde la raíz del proyecto (la carpeta "ABM-Income...").
-    
+    if getattr(sys, 'frozen', False):
+        # Si es EXE, base es donde está el ejecutable
+        base_dir = os.path.dirname(sys.executable)
+    else:
+        # Si es Script, asumimos ejecución desde root del proyecto
+        base_dir = os.getcwd()
+
     DATA_FOLDER = 'data'
     CLEAN_DATA_FOLDER = 'clean_data'
     
     # Uso de os.path.join para crear rutas robustas
-    data_path = DATA_FOLDER
-    clean_data_path = CLEAN_DATA_FOLDER
+    data_path = os.path.join(base_dir, DATA_FOLDER)
+    clean_data_path = os.path.join(base_dir, CLEAN_DATA_FOLDER)
     
     # Crear la carpeta clean_data si no existe
     if not os.path.exists(clean_data_path):
