@@ -29,6 +29,7 @@ datas = [
     (mesa_templates, 'mesa/visualization/templates'), # Include Mesa HTML templates
     ('assets', 'assets'), # Include local assets (images, css)
     ('data', 'data'), # Include initial data
+    ('clean_data', 'clean_data'), # Include generated data
     ('src', 'src'), # Include src for dynamic imports if needed
 ]
 

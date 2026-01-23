@@ -154,29 +154,56 @@ class ABMApp:
         def task():
             print("\n--- Ejecutando Calibración ---")
             try:
-                # Lógica de calibrado
-                pass
+                # Importamos aquí por si hay dependencias circulares o carga lenta
+                import calibrado_aunado
+                
+                # Definimos los archivos (nombres base)
+                files_ig = {'data': '3145_data_clean_IG.xlsx', 'model': 'model_IG.xlsx'}
+                files_tw = {'data': '3145_data_clean_X.xlsx',  'model': 'model_X.xlsx'}
+                files_fb = {'data': '3145_data_clean_FB.xlsx', 'model': 'model_FB.xlsx'}
+
+                print("Calibrando Instagram...")
+                calibrado_aunado.calcular_estadisticas_manual("Instagram", files_ig['data'], files_ig['model'])
+                
+                print("Calibrando Twitter (X)...")
+                calibrado_aunado.calcular_estadisticas_manual("Twitter", files_tw['data'], files_tw['model'])
+                
+                print("Calibrando Facebook...")
+                calibrado_aunado.calcular_estadisticas_manual("Facebook", files_fb['data'], files_fb['model'])
+
+                print("\n--- Calibración Completada ---")
+
             except Exception as e:
-                print(f"Error: {e}")
+                print(f"Error en calibración: {e}")
+                import traceback
+                traceback.print_exc()
         self.run_thread(task)
 
     def run_simulation(self):
         def task():
             print("\n--- Lanzando Simulación Mesa ---")
-            print("Abriendo navegador...")
-            # graphics.py tiene un 'launch()' normalmente de Mesa ModularServer
+            print("Inicializando servidor gráfico...")
+            print("NOTA: Esto abrirá una pestaña en tu navegador predeterminado.")
             try:
-                # Importamos dinámicamente para no cargar Mesa al inicio si no es necesario
+                # Import dinámico
                 import graphics
-                # graphics.launch() suele bloquear.
-                # Mesa ModularServer launch() bloquea hasta Ctrl+C.
-                # Lo ejecutamos y la GUI seguirá viva (thread), pero no podremos pararlo desde la GUI fácilmente.
-                # Alternativa: subprocess
-                base_path = os.path.dirname(os.path.abspath(__file__))
-                script_path = os.path.join(base_path, 'graphics.py')
-                subprocess.Popen([sys.executable, script_path])
+                
+                # En lugar de subprocess, lanzamos graphics.launch() directamente.
+                # Como launch() bloquea, y ya estamos en un thread aparte (task), está bien.
+                # Nota: Una vez lanzado, Mesa captura el hilo. 
+                # Para detenerlo limpiamente se requeriría más lógica (matar servidor), 
+                # pero para esta app simple está bien.
+                try:
+                    graphics.launch("Simulación Unificada", "model_FB.xlsx", with_slider=True)
+                except KeyboardInterrupt:
+                    print("Simulación detenida.")
+                except Exception as e:
+                    print(f"Error interno en Mesa: {e}")
+
             except Exception as e:
                 print(f"Error lanzando gráficos: {e}")
+                import traceback
+                traceback.print_exc()
         
         self.run_thread(task)
 

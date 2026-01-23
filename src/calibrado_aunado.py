@@ -6,16 +6,42 @@ import math
 # --- 1. GESTIÓN DE RUTAS ---
 def obtener_ruta_datos(nombre_archivo):
     """
-    Busca el archivo en la carpeta 'clean_data' subiendo un nivel desde 'src'.
+    Busca el archivo de datos de manera robusta:
+    1. En el directorio actual (si el usuario generó datos nuevos).
+    2. En 'clean_data' relativo al CWD.
+    3. En el path congelado (_MEIPASS) si es un exe.
     """
+    import sys
+    
+    # 1. Probar ruta actual o relativa simple
+    if os.path.exists(nombre_archivo):
+        return os.path.abspath(nombre_archivo)
+    
+    path_cwd_clean = os.path.join(os.getcwd(), 'clean_data', nombre_archivo)
+    if os.path.exists(path_cwd_clean):
+        return path_cwd_clean
+
+    # 2. Probar lógica basada en script ubicación original
     try:
         dir_script = os.path.dirname(os.path.abspath(__file__))
-        dir_raiz = os.path.dirname(dir_script)
+        # Caso normal developer: src/../clean_data
+        dir_raiz = os.path.dirname(dir_script) 
         ruta = os.path.join(dir_raiz, 'clean_data', nombre_archivo)
-        return ruta
-    except Exception as e:
-        # Fallback si se ejecuta desde otro sitio
-        return nombre_archivo
+        if os.path.exists(ruta):
+            return ruta
+    except:
+        pass
+
+    # 3. Caso PyInstaller Frost
+    if getattr(sys, 'frozen', False):
+        base_path = sys._MEIPASS
+        # En el spec añadimos ('clean_data', 'clean_data')
+        ruta_frozen = os.path.join(base_path, 'clean_data', nombre_archivo)
+        if os.path.exists(ruta_frozen):
+            return ruta_frozen
+
+    # Fallback
+    return nombre_archivo
 
 # --- 2. CÁLCULO MATEMÁTICO MANUAL ---
 def calcular_estadisticas_manual(nombre_red, archivo_datos, archivo_modelo):
