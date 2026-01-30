@@ -21,13 +21,16 @@ mesa_viz_datas, mesa_viz_binaries, mesa_viz_hiddenimports = collect_all('mesa_vi
 all_datas = mesa_datas + mesa_viz_datas
 all_hiddenimports = mesa_hiddenimports + mesa_viz_hiddenimports
 
-# Defines aditional data to include
+# Definir la raíz del proyecto relativa a este script (codigo/build_app.py)
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Define additional data to include
 # Format: (source_path, destination_path)
 local_datas = [
-    ('assets', 'assets'), # Include local assets (images, css)
-    ('data', 'data'), # Include initial data
-    ('clean_data', 'clean_data'), # Include generated data
-    ('src', 'src'), # Include src for dynamic imports if needed
+    (os.path.join(ROOT_DIR, 'web', 'assets'), 'assets'), # Include assets from web/
+    (os.path.join(ROOT_DIR, 'documentos_datos', 'data'), 'data'), # Include data from documentos_datos/
+    (os.path.join(ROOT_DIR, 'documentos_datos', 'clean_data'), 'clean_data'), # Include clean_data from documentos_datos/
+    (os.path.join(ROOT_DIR, 'codigo', 'src'), 'src'), # Include src from codigo/
 ]
 
 # Construct the --add-data argument
@@ -48,7 +51,7 @@ for src, dest in all_datas:
 
 # PyInstaller arguments
 args = [
-    'src/main_gui.py', # Entry point
+    os.path.join(ROOT_DIR, 'codigo', 'src', 'main_gui.py'), # Entry point
     '--name=ABM_Happiness_Tool',
     '--onefile', # Single executable
     '--windowed', # No console window (GUI only)

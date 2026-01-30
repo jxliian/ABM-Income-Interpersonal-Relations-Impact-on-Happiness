@@ -160,8 +160,9 @@ def elegir_redes(redes):
 if __name__ == "__main__":
     # Configuración de Rutas
     SRC_DIR = os.path.dirname(os.path.abspath(__file__))
-    PROJECT_ROOT = os.path.dirname(SRC_DIR)
-    CLEAN_DATA_DIR = os.path.join(PROJECT_ROOT, "clean_data")
+    # El script está en codigo/src/, subimos dos niveles para el root
+    PROJECT_ROOT = os.path.dirname(os.path.dirname(SRC_DIR))
+    CLEAN_DATA_DIR = os.path.join(PROJECT_ROOT, "documentos_datos", "clean_data")
     
     if not os.path.exists(CLEAN_DATA_DIR):
         try:

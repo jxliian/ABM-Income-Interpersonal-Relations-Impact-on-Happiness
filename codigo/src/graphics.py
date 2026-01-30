@@ -43,16 +43,17 @@ MAPA_INGRESOS = {
 
 def get_data_path(filename):
     import sys
-    # 1. Prioridad: Archivo en 'clean_data' local (recién generado)
-    cwd_path = os.path.join(os.getcwd(), 'clean_data', filename)
+    # 1. Prioridad: Archivo en 'documentos_datos/clean_data' local (recién generado)
+    cwd_path = os.path.join(os.getcwd(), 'documentos_datos', 'clean_data', filename)
     if os.path.exists(cwd_path):
         return cwd_path
     
     # 2. Ruta relativa desarrollo
     try:
         dir_script = os.path.dirname(os.path.abspath(__file__))
-        dir_root = os.path.dirname(dir_script)
-        dev_path = os.path.join(dir_root, 'clean_data', filename)
+        # El script está en codigo/src/, subimos dos niveles para el root
+        dir_root = os.path.dirname(os.path.dirname(dir_script))
+        dev_path = os.path.join(dir_root, 'documentos_datos', 'clean_data', filename)
         if os.path.exists(dev_path):
             return dev_path
     except:

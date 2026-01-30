@@ -17,16 +17,17 @@ def obtener_ruta_datos(nombre_archivo):
     if os.path.exists(nombre_archivo):
         return os.path.abspath(nombre_archivo)
     
-    path_cwd_clean = os.path.join(os.getcwd(), 'clean_data', nombre_archivo)
+    # Intenta en documentos_datos/clean_data relativo al CWD
+    path_cwd_clean = os.path.join(os.getcwd(), 'documentos_datos', 'clean_data', nombre_archivo)
     if os.path.exists(path_cwd_clean):
         return path_cwd_clean
 
     # 2. Probar lógica basada en script ubicación original
     try:
         dir_script = os.path.dirname(os.path.abspath(__file__))
-        # Caso normal developer: src/../clean_data
-        dir_raiz = os.path.dirname(dir_script) 
-        ruta = os.path.join(dir_raiz, 'clean_data', nombre_archivo)
+        # El script está en codigo/src/, por lo que la raíz del proyecto está dos niveles arriba
+        dir_raiz = os.path.dirname(os.path.dirname(dir_script)) 
+        ruta = os.path.join(dir_raiz, 'documentos_datos', 'clean_data', nombre_archivo)
         if os.path.exists(ruta):
             return ruta
     except:
@@ -63,18 +64,21 @@ def calcular_estadisticas_manual(nombre_red, archivo_datos, archivo_modelo):
 
         # --- A. SELECCIÓN DE COLUMNAS ---
         # 1. Datos Reales (CIS): Buscamos P69 (Felicidad)
-        # Si no existe por nombre, usamos la columna adecuada (normalmente índice 0 o 3)
         if "P69" in df_real.columns:
             data_real = df_real["P69"]
+            print(f"  > Columna REAL: 'P69'")
         else:
-            # AJUSTE MANUAL: Si tus datos clean tienen la felicidad en col 3, usa iloc[:,3]
-            data_real = df_real.iloc[:, 3] 
+            # Fallback a la última columna (que suele ser P69 tras el filtrado)
+            data_real = df_real.iloc[:, -1] 
+            print(f"  > Columna REAL (fallback): '{df_real.columns[-1]}'")
 
         # 2. Datos Simulados (Modelo): Buscamos Nivel_Felicidad
         if "Nivel_Felicidad" in df_sim.columns:
             data_sim = df_sim["Nivel_Felicidad"]
+            print(f"  > Columna SIM: 'Nivel_Felicidad'")
         else:
             data_sim = df_sim.iloc[:, 0]
+            print(f"  > Columna SIM (fallback): '{df_sim.columns[0]}'")
 
         # --- B. SINCRONIZACIÓN ---
         # Cortamos los arrays para que tengan la misma longitud

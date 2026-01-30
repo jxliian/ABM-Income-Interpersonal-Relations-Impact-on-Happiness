@@ -26,7 +26,7 @@ jobs:
 
     - name: Build Executable
       run: |
-        python build_app.py
+        python codigo/build_app.py
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v4

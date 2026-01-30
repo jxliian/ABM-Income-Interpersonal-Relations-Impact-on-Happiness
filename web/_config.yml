@@ -5,6 +5,7 @@ remote_theme: just-the-docs/just-the-docs
 
 url: https://jxliian.github.io
 baseurl: /ABM-Income-Interpersonal-Relations-Impact-on-Happiness
+source: web
 
 aux_links:
   "Ver Repositorio en GitHub":

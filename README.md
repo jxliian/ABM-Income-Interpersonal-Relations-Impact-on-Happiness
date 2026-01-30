@@ -1,4 +1,4 @@
-![Economic Segregation Sim Banner](./docs/portada_github.png)
+![Economic Segregation Sim Banner](./documentos_datos/docs/portada_github.png)
 
 # Dinámicas de Segregación Socioeconómica y Contagio Emocional en Redes Sociales
 
@@ -8,13 +8,12 @@
 > 👉 **[https://jxliian.github.io/ABM-Income-Interpersonal-Relations-Impact-on-Happiness](https://jxliian.github.io/ABM-Income-Interpersonal-Relations-Impact-on-Happiness)**
 
 > [!CAUTION]
-> **Estructura de la Web (GitHub Pages)**
-> Los siguientes archivos y carpetas son **exclusivos para la generación de la página web** y no deben modificarse a menos que se quiera alterar el sitio:
-> *   `github_pages/` (Contenido de documentación)
-> *   `assets/` (Estilos CSS e imágenes web)
-> *   `_includes/` (Configuración avanzada de Jekyl/HTML)
-> *   `_config.yml` (Configuración del tema)
-> *   `index.md` (Página de inicio de la web)
+> Los siguientes archivos y carpetas son **exclusivos para la generación de la página web** (dentro de la carpeta `web/`):
+> *   `web/github_pages/` (Contenido de documentación)
+> *   `web/assets/` (Estilos CSS e imágenes web)
+> *   `web/_includes/` (Configuración avanzada de Jekyl/HTML)
+> *   `web/_config.yml` (Configuración del tema)
+> *   `web/index.md` (Página de inicio de la web)
 
 Este repositorio implementa un **Modelo Basado en Agentes (ABM)** en Python para simular la dinámica de la felicidad, la segregación económica y la sociabilidad en redes sociales. El proyecto utiliza microdatos reales del **Centro de Investigaciones Sociológicas (CIS)** para calibrar los agentes, trascendiendo los modelos puramente teóricos.
 
@@ -67,7 +66,7 @@ La herramienta sigue un proceso lógico estructurado en 4 pasos (Filtrado $\to$ 
 *   **Paso 4 (Visualización Interactiva):** Es el entorno gráfico donde interactúas con la simulación.
     *   ⚠️ **Importante:** Si usas el **Slider**, recuerda moverlo, pulsar **Reset** y luego **Start** para que los cambios surtan efecto.
 
-👉 **[Guía Detallada: Cómo Funciona](./github_pages/como_funciona.md)**
+👉 **[Guía Detallada: Cómo Funciona](./web/github_pages/como_funciona.md)**
 
 ---
 
@@ -77,10 +76,10 @@ Si usas **Windows** y quieres probar la aplicación rápidamente sin instalar na
 
 1.  **Descarga el repositorio base:** Pulsa en el botón verde `<> Code` y elige `Download ZIP`. Descomprime el archivo.
 2.  **Descarga el ejecutable:** Ve a la pestaña **[Actions](https://github.com/jxliian/ABM-Income-Interpersonal-Relations-Impact-on-Happiness/actions)**, entra en el último workflow ("Build Windows Executable") y descarga el artefacto `ABM_Happiness_Tool_Windows`.
-3.  **Coloca el ejecutable:** Descomprime el artefacto y mueve el archivo `ABM_Happiness_Tool.exe` **DENTRO** de la carpeta del repositorio que descomprimiste en el paso 1 (debe estar junto a carpetas como `src`, `assets`, etc.).
+3.  **Coloca el ejecutable:** Descomprime el artefacto y mueve el archivo `ABM_Happiness_Tool.exe` **DENTRO** de la carpeta del repositorio que descomprimiste en el paso 1 (debe estar junto a carpetas como `codigo`, `web`, etc.).
 4.  **Ejecuta:** Haz doble clic en `ABM_Happiness_Tool.exe`.
 
-![Vista de la App](./assets/images/app.png)
+![Vista de la App](./web/assets/images/app.png)
 
 > **Nota:** Al ejecutarlo, puede tardar unos segundos en cargar. Si Windows Defender muestra un aviso, pulsa en "Más información" -> "Ejecutar de todas formas".
 
@@ -109,8 +108,7 @@ Una vez instalado Anaconda, abre **Anaconda Prompt** (Windows) o tu terminal (ma
 Ejecuta el siguiente comando para crear automáticamente el entorno con todas las dependencias necesarias (`mesa`, `pandas`, `numpy`, etc.):
 
 ```bash
-conda env create -f environment.yml
-
+conda env create -f codigo/environment.yml
 ```
 
 Este comando leerá el archivo y creará un entorno aislado llamado **`abm_seminario`**.
@@ -130,10 +128,10 @@ Si prefieres usar el ejecutable generado automáticamente (alternativa al paso a
 
 ### Linux (Experimental)
 
-Existe un ejecutable en `./dist/ABM_Happiness_Tool` generado con PyInstaller.
+Existe un ejecutable en `dist/ABM_Happiness_Tool` generado con PyInstaller.
 
 > **Importante:** Actualmente, el ejecutable de Linux **solo implementa correctamente hasta el Paso 2**.
-> Para una experiencia completa y estable en Linux, se recomienda encarecidamente **ejecutar el código fuente** siguiendo los pasos de "Uso del Entorno" (comando `python src/graphics.py`).
+> Para una experiencia completa y estable en Linux, se recomienda encarecidamente **ejecutar el código fuente** siguiendo los pasos de "Uso del Entorno" (comando `python codigo/src/graphics.py`).
 
 ---
 
@@ -157,8 +155,7 @@ Verás `(abm_seminario)` al inicio de tu línea de comandos.
 Para lanzar el servidor de visualización y abrir el dashboard en tu navegador:
 
 ```bash
-python graphics.py
-
+python codigo/src/graphics.py
 ```
 
 *(Nota: Asegúrate de que el archivo principal se llame `graphics.py` según tu estructura actual).*
@@ -282,7 +279,7 @@ Run the following command to automatically create the environment with all neces
 **Bash**
 
 ```
-conda env create -f environment.yml
+conda env create -f codigo/environment.yml
 ```
 
 This command will read the file and create an isolated environment named  **`abm_seminario`** .
@@ -312,7 +309,7 @@ To launch the visualization server and open the dashboard in your browser:
 **Bash**
 
 ```
-python graphics.py
+python codigo/src/graphics.py
 ```
 
 *(Note: Ensure the main file is named `graphics.py` or `run.py` according to your current structure).*
