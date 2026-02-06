@@ -1,0 +1,7 @@
+# Dependencias para el Notebook de Simulaci\u00f3n
+mesa>=2.1.1
+pandas
+numpy
+matplotlib
+ipywidgets
+openpyxl
