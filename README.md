@@ -34,13 +34,14 @@ El proyecto admite varios métodos de ejecución. **Si no tienes experiencia té
 
 ### 💻 1. Jupyter Notebook vía VS Code (Recomendado)
 
-Es la forma más sencilla de ejecutar el cuaderno interactivo y gestionar las librerías automáticamente:
+Es la forma más sencilla de ejecutar el cuaderno interactivo y gestionar las librerías automáticamente (es necesario tener instalado Python 3.10++):
 
-1.  **Abrir Carpeta:** Abre la carpeta raíz del proyecto en Visual Studio Code.
+1.  **Abrir Carpeta:** Abre la carpeta raíz del proyecto en Visual Studio Code. La del proyecto entera.
 2.  **Abrir el Notebook:** Ve a la carpeta `notebook/` y abre `ABM_Simulacion.ipynb`.
-3.  **Seleccionar Kernel:** Arriba a la derecha, pulsa en **"Select Kernel"**.
-4.  **Configurar Entorno:** Elige tu entorno de Python preferido (Conda, Venv o el que uses habitualmente). Si no tienes uno activo, pulsa en **"Create Python Environment"** y sigue las instrucciones de VS Code.
-5.  **Instalación:** Asegúrate de instalar las librerías necesarias usando el archivo `notebook/requirements.txt` (VS Code suele ofrecer la instalación automática al detectar el archivo).
+3.  **Seleccionar Kernel:** Arriba a la derecha, pulsa en **"Select Kernel"**. Selecciona el kernel, y si no tienes creado previamente el entorno para nuestro trabajo, debes seleccionar: PASO 4 y 5.
+4.  **Configurar Entorno:** Elige tu entorno de Python preferido (Venv). Si no tienes uno activo, pulsa en **"Create Python Environment"** y sigue las instrucciones de VS Code: Python Environments -> Create Environment -> Venv -> La versión de Python que desee a poder ser igual o superior a 3.10 -> Seleccionas requirements.txt que te instalará todas las librerías necesarias. -> OK. 
+5.  **Instalación:** Asegúrate de instalar las librerías necesarias usando el archivo `notebook/requirements.txt` (VS Code suele ofrecer la instalación automática al detectar el archivo, es lo que has visto en el paso anterior).
+6.  **Final:** A partir de aquí ya tendrías nuestro entorno con nuestras librerías y sería solo ejecutar el notebook.
 
 > [!TIP]
 > **Usuarios de Linux:** Ejecutar el notebook dentro de un entorno virtual (ya sea creado desde VS Code o de forma externa) garantiza que no haya conflictos con el sistema operativo.
