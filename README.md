@@ -50,9 +50,13 @@ Es la forma más sencilla de ejecutar el cuaderno interactivo y gestionar las li
 Si solo quieres probar la aplicación rápidamente:
 
 1.  **Descarga el repositorio:** Pulsa en el botón verde `<> Code` -> `Download ZIP`.
-2.  **Descarga el ejecutable:** Ve a [Actions](https://github.com/jxliian/ABM-Income-Interpersonal-Relations-Impact-on-Happiness/actions) y baja el artefacto `ABM_Happiness_Tool_Windows`.
-3.  **Ubicación:** Mueve el `.exe` **DENTRO** de la carpeta raíz descargada.
+2.  **Descarga el ejecutable:** Ve a [Actions](https://github.com/jxliian/ABM-Income-Interpersonal-Relations-Impact-on-Happiness/actions) y baja el artefacto `ABM_Happiness_Tool_Windows`. (Actualmente este paso ya no es necesario, pues ya incluimos el ejecutable en la carpeta raíz del repositorio, pero si quieres tener la última versión del ejecutable, puedes descargarlo de aquí (actualmente el ejecutable ya es el último disponible))
+3.  **Ubicación:** Mueve el `.exe` **DENTRO** de la carpeta raíz descargada. (Actualmente el ejecutable ya está en la carpeta raíz del repositorio)
 4.  **Ejecuta:** Doble clic en `ABM_Happiness_Tool.exe`.
+
+> [!WARNING]
+> **Windows:** Si te da algún error lo más posible que se deba a la disposición de los archivos. Para ello, debes entrar en la carpeta de documentos_datos y sacar la carpeta data al nivel raíz del repositorio. (Solo para este modo, si quieres realizar la simulación desde los otros métodos, debes tener la carpeta data dentro de la carpeta documentos_datos)
+
 
 ### 🐧 3. Linux / Desarrolladores (Conda + Terminal)
 
